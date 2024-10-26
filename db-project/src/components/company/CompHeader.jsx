@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Tab from "@mui/material/Tab";
-import '../assets/styles/Header.css';
-import logo from '../assets/images/logo.png';
+import '../../assets/styles/Header.css';
+import logo from '../../assets/images/logo.png';
 import { Button, Grid, Menu, Tabs, ThemeProvider } from "@mui/material";
-import { theme } from './Theme';
+import { theme } from '../Theme';
 import MenuIcon from '@mui/icons-material/Menu';
 
-const Header = ({ location }) => {
+const CompHeader = ({ location }) => {
     const [locationValue, setLocationValue] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
     useEffect(() => {
         switch(location) {
-            case '/cont/home':
+            case '/comp/jobs':
                 setLocationValue(0);
                 break;
-            case '/cont/search':
+            case '/comp/create':
                 setLocationValue(1);
                 break;
-            case '/cont/applications':
+            case '/comp/applications':
                 setLocationValue(2);
                 break;
-            case '/cont/profile':
+            case '/comp/profile':
                 setLocationValue(3);
                 break;   
             case '/':
@@ -81,10 +81,10 @@ const Header = ({ location }) => {
                                 allowScrollButtonsMobile
                                 orientation="vertical"
                             >
-                                <Tab value={0} label="My Jobs" href="/cont/home" />
-                                <Tab value={1} label="Search" href="/cont/search" />
-                                <Tab value={2} label="Applications" href="/cont/capplications" />
-                                <Tab value={3} label="Profile" href="/cont/profile" />
+                                <Tab value={0} label="My Jobs" href="/comp/jobs" />
+                                <Tab value={1} label="Create" href="/comp/create" />
+                                <Tab value={2} label="Applications" href="/comp/applications" />
+                                <Tab value={3} label="Profile" href="/comp/profile" />
                                 <Tab value={4} label="Log Out" href="/" />
                             </Tabs>
                         </Menu>
@@ -98,10 +98,10 @@ const Header = ({ location }) => {
                             scrollButtons
                             allowScrollButtonsMobile
                         >
-                            <Tab value={0} label="My Jobs" href="/cont/home" />
-                            <Tab value={1} label="Search" href="/cont/search" />
-                            <Tab value={2} label="Applications" href="/cont/applications" />
-                            <Tab value={3} label="Profile" href="/cont/profile" />
+                            <Tab value={0} label="My Jobs" href="/comp/jobs" />
+                            <Tab value={1} label="Create" href="/comp/create" />
+                            <Tab value={2} label="Applications" href="/comp/applications" />
+                            <Tab value={3} label="Profile" href="/comp/profile" />
                             <Tab value={4} label="Log Out" href="/" />
                         </Tabs>
                     </ThemeProvider>
@@ -111,4 +111,4 @@ const Header = ({ location }) => {
     );
 };
 
-export default Header;
+export default CompHeader;
