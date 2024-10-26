@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Typography, Button, Paper } from '@mui/material';
+import { Stack, Typography, Button, Paper, Chip } from '@mui/material';
 
 const CompApplications = () => {
   const [jobs, setJobs] = useState([]);
@@ -19,6 +19,7 @@ const CompApplications = () => {
           email: 'mphillip@trinity.edu',
           rate: 30,
           resume: 'Experienced software engineer with a passion for developing innovative programs. Skilled in JavaScript, React, and Node.js.',
+          tags: ['JavaScript', 'React', 'Node.js'], // Added tags
         },
       },
       {
@@ -34,6 +35,7 @@ const CompApplications = () => {
           email: 'johndoe@example.com',
           rate: 40,
           resume: 'Product Manager with over 5 years of experience in leading cross-functional teams to deliver high-quality products.',
+          tags: ['Agile', 'Leadership', 'Product Development'], // Added tags
         },
       },
       {
@@ -50,6 +52,7 @@ const CompApplications = () => {
           email: 'asmith@domain.com',
           rate: 35,
           resume: 'Web Developer skilled in HTML, CSS, and JavaScript with a knack for creating responsive web applications.',
+          tags: ['HTML', 'CSS', 'JavaScript'], // Added tags
         },
       },
     ]);
@@ -106,11 +109,29 @@ const CompApplications = () => {
               {job.status === 'Pending' && (
                 <Stack spacing={1} sx={{ marginTop: 2 }}>
                   <Typography variant="h6">Applicant Information:</Typography>
-                  <Typography variant="body2"><strong>Name:</strong> {job.employee.firstName} {job.employee.lastName}</Typography>
-                  <Typography variant="body2"><strong>Username:</strong> {job.employee.username}</Typography>
-                  <Typography variant="body2"><strong>Email:</strong> {job.employee.email}</Typography>
-                  <Typography variant="body2"><strong>Rate:</strong> ${job.employee.rate}/hr</Typography>
-                  <Typography variant="body2"><strong>Resume:</strong> {job.employee.resume}</Typography>
+                  <Typography variant="body2">
+                    <strong>Name:</strong> {job.employee.firstName} {job.employee.lastName}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Username:</strong> {job.employee.username}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Email:</strong> {job.employee.email}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Rate:</strong> ${job.employee.rate}/hr
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Resume:</strong> {job.employee.resume}
+                  </Typography>
+                  
+                  {/* Display tags */}
+                  <Typography variant="body2"><strong>Applicant Tags:</strong></Typography>
+                  <Stack direction="row" spacing={1} mt={1}>
+                    {job.employee.tags.map((tag, index) => (
+                      <Chip key={index} label={tag} variant="outlined"/>
+                    ))}
+                  </Stack>
                 </Stack>
               )}
             </Stack>
