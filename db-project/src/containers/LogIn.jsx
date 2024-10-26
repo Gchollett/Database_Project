@@ -37,7 +37,7 @@ const LogIn = () => {
               label="Password"
               fullWidth
             />
-             <Button type="submit" variant="outlined" size="large" href='/home'>Log In</Button>
+             <Button type="submit" variant="outlined" size="large" href='/cont/home'>Log In</Button>
             </Grid>
             </Grid>
      

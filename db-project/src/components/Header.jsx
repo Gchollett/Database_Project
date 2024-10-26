@@ -13,19 +13,18 @@ const Header = ({ location }) => {
 
     useEffect(() => {
         switch(location) {
-            case '/home':
+            case '/cont/home':
                 setLocationValue(0);
                 break;
-            case '/jobfinder':
+            case '/cont/search':
                 setLocationValue(1);
                 break;
-            case '/capplications':
+            case '/cont/applications':
                 setLocationValue(2);
                 break;
-            case '/cprofile':
+            case '/cont/profile':
                 setLocationValue(3);
-                break;
-            
+                break;   
             case '/':
                 break;
             default:
@@ -82,10 +81,10 @@ const Header = ({ location }) => {
                                 allowScrollButtonsMobile
                                 orientation="vertical"
                             >
-                                <Tab value={0} label="My Jobs" href="/home" />
-                                <Tab value={1} label="Job Finder" href="/jobfinder" />
-                                <Tab value={2} label="Applications" href="/capplications" />
-                                <Tab value={3} label="My Profile" href="/cprofile" />
+                                <Tab value={0} label="My Jobs" href="/cont/home" />
+                                <Tab value={1} label="Search" href="/cont/search" />
+                                <Tab value={2} label="Applications" href="/cont/capplications" />
+                                <Tab value={3} label="Profile" href="/cont/profile" />
                                 <Tab value={4} label="Log Out" href="/" />
                             </Tabs>
                         </Menu>
@@ -99,10 +98,10 @@ const Header = ({ location }) => {
                             scrollButtons
                             allowScrollButtonsMobile
                         >
-                            <Tab value={0} label="My Jobs" href="/home" />
-                            <Tab value={1} label="Job Finder" href="/jobfinder" />
-                            <Tab value={2} label="Applications" href="/capplications" />
-                            <Tab value={3} label="My Profile" href="/cprofile" />
+                            <Tab value={0} label="My Jobs" href="/cont/home" />
+                            <Tab value={1} label="Search" href="/cont/search" />
+                            <Tab value={2} label="Applications" href="/cont/applications" />
+                            <Tab value={3} label="Profile" href="/cont/profile" />
                             <Tab value={4} label="Log Out" href="/" />
                         </Tabs>
                     </ThemeProvider>

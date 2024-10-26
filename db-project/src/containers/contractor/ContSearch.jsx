@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, Chip, TextField } from '@mui/material';
 
-const JobListing = () => {
+const ContSearch = () => {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [sortOption, setSortOption] = useState('pay-asc'); // Default sort by pay ascending
@@ -14,18 +14,18 @@ const JobListing = () => {
       {
         jobId: '12345',
         title: 'Web Developer',
-        company: 'TechCorp',
+        company: 'Tech Hub',
         isRemote: true,
         startDate: '2023-11-01 09:00 AM',
         endDate: '2024-05-01 05:00 PM',
         pricePerHour: 50,
-        description: 'As a Software Engineer, you will develop high-quality software solutions. You will collaborate with cross-functional teams to define and implement new features.',
+        description: 'As a Web Developer, you will develop high-quality software solutions. You will collaborate with cross-functional teams to define and implement new features.',
         tags: ['Part-time', 'Front-End'],  
       },
       {
         jobId: '67890',
         title: 'Product Manager',
-        company: 'InnovateX',
+        company: 'GNCM',
         isRemote: false,
         startDate: '2023-12-01 10:00 AM',
         endDate: '2024-06-01 04:00 PM',
@@ -67,7 +67,7 @@ const JobListing = () => {
 
   return (
     <>
-      <h2>Job Finder</h2>
+      <h2>Job Search</h2>
       <Stack spacing={2}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -156,4 +156,4 @@ const JobListing = () => {
   );
 };
 
-export default JobListing;
+export default ContSearch;

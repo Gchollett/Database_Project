@@ -9,7 +9,7 @@ const ContApplications = () => {
         setJobs([
           {
             title: 'Software Engineer',
-            status: 'Accepted',
+            status: 'Pending',
             company: 'DWC Consulting Group',
             applicationDate: '2023-10-15',
           },

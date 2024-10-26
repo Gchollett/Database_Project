@@ -28,7 +28,7 @@ const jobs = [
   ];
   
 
-const Home = () => {
+const ContHome = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredJobs, setFilteredJobs] = useState(jobs);
 
@@ -100,4 +100,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default ContHome;
