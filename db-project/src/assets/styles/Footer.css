@@ -1,0 +1,14 @@
+footer {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    color: rgb(124, 133, 143);
+    border-top: 0.05rem solid;
+    font-size: small;
+  }
+  
+  hr {
+    fill: rgb(124, 133, 143);;
+    border-color: rgb(124, 133, 143);
+  }

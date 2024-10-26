@@ -1,0 +1,26 @@
+.image {
+    margin: 0px;
+    display: flex;
+    min-width: 250px;
+    width: 50%;
+    max-width: 250px;
+}
+
+div.hamburger {
+    display: none;
+}
+
+div.menubar {
+    display: block;
+    float: right;
+}
+
+@media screen and (max-width: 800px) {
+    div.hamburger {
+      display: block;
+      float: right;
+    }
+    div.menubar {
+        display: none;
+    }
+}
