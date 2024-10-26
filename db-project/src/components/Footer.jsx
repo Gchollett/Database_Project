@@ -6,8 +6,8 @@ const Footer =  () => {
     return (
         <>
             <footer>
-                <p>© 2024 Department of Computer Science, Trinity University</p>
-                <p>Garrett Chollett, Mary Tish Phillips, Quang</p>
+                <h5>© 2024 Department of Computer Science, Trinity University</h5>
+                <h5>Garrett Chollett, Mary Tish Phillips, Quang</h5>
             </footer>
         </>
     );

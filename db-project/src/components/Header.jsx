@@ -19,9 +19,13 @@ const Header = ({ location }) => {
             case '/jobfinder':
                 setLocationValue(1);
                 break;
-            case '/cprofile':
+            case '/capplications':
                 setLocationValue(2);
                 break;
+            case '/cprofile':
+                setLocationValue(3);
+                break;
+            
             case '/':
                 break;
             default:
@@ -80,8 +84,9 @@ const Header = ({ location }) => {
                             >
                                 <Tab value={0} label="My Jobs" href="/home" />
                                 <Tab value={1} label="Job Finder" href="/jobfinder" />
-                                <Tab value={2} label="My Profile" href="/cprofile" />
-                                <Tab value={3} label="Log Out" href="/" />
+                                <Tab value={2} label="Applications" href="/capplications" />
+                                <Tab value={3} label="My Profile" href="/cprofile" />
+                                <Tab value={4} label="Log Out" href="/" />
                             </Tabs>
                         </Menu>
                     </ThemeProvider>
@@ -96,8 +101,9 @@ const Header = ({ location }) => {
                         >
                             <Tab value={0} label="My Jobs" href="/home" />
                             <Tab value={1} label="Job Finder" href="/jobfinder" />
-                            <Tab value={2} label="My Profile" href="/cprofile" />
-                            <Tab value={3} label="Log Out" href="/" />
+                            <Tab value={2} label="Applications" href="/capplications" />
+                            <Tab value={3} label="My Profile" href="/cprofile" />
+                            <Tab value={4} label="Log Out" href="/" />
                         </Tabs>
                     </ThemeProvider>
                 </div>

@@ -6,6 +6,7 @@ import LogIn from './containers/LogIn';
 import Home from './containers/Home';
 import ContProfile from './containers/ContProfile';
 import JobFinder from './containers/JobFinder';
+import ContApplications from './containers/ContApplications';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Layout/>}>
           <Route path="home" element={<Home/>}/>
           <Route path="jobfinder" element={<JobFinder/>}/>
+          <Route path="capplications" element={<ContApplications/>}/>
           <Route path="cprofile" element={<ContProfile/>}/>
         </Route>
       </Routes>
