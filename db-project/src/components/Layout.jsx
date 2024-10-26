@@ -6,7 +6,7 @@ import '../assets/styles/Layout.css'
 import React from "react";
 
 const Layout = () => {
-    const [locationValue, setLocationValue] = useState<string>('')
+    const [locationValue, setLocationValue] = useState('')
 
     useEffect(() => {
       setLocationValue(location.pathname)
