@@ -81,7 +81,7 @@ const ContSearch = () => {
           </Grid>
         </Grid>
         <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Sort by Pay</InputLabel>
               <Select
@@ -109,51 +109,51 @@ const ContSearch = () => {
         </Grid>
         <hr />
         {filteredJobs.map((job) => (
-            <>
-          <Stack
-            key={job.jobId}
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={1}
-            width="100%"
-          >
-            <Stack spacing={0.5} alignItems="flex-start">
-              <Typography variant="body1">{job.title}</Typography>
-              <Typography variant="body2">{job.company}</Typography>
-              <Typography variant="body2" color="textSecondary">Job ID: {job.jobId}</Typography>
-              <Typography variant="body2" color="textSecondary">
-                {job.isRemote ? 'Remote: Yes' : 'Remote: No'}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Start Date: {job.startDate}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                End Date: {job.endDate}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Price per Hour: ${job.pricePerHour}
-              </Typography>
-              <Typography variant="body2">{job.description}</Typography>
-              <Stack direction="row" spacing={1} mt={1}>
-                {job.tags.map((tag, index) => (
-                  <Chip key={index} label={tag} variant="outlined" />
-                ))}
+          <React.Fragment key={job.jobId}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              spacing={1}
+              width="100%"
+            >
+              <Stack spacing={0.5} alignItems="flex-start">
+                <Typography variant="body1">{job.title}</Typography>
+                <Typography variant="body2">{job.company}</Typography>
+                <Typography variant="body2" color="textSecondary">Job ID: {job.jobId}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {job.isRemote ? 'Remote: Yes' : 'Remote: No'}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Start Date: {job.startDate}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  End Date: {job.endDate}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Price per Hour: ${job.pricePerHour}
+                </Typography>
+                <Typography variant="body2">{job.description}</Typography>
+                <Stack direction="row" spacing={1} mt={1}>
+                  {job.tags.map((tag, index) => (
+                    <Chip key={index} label={tag} variant="outlined" />
+                  ))}
+                </Stack>
               </Stack>
-            </Stack>
 
-            {/* Apply button */}
-            <Button variant="contained" color="primary">
-              Apply
-            </Button>
-          </Stack>
-          <hr></hr>
-          </>
+              {/* Apply button */}
+              <Button variant="contained" color="primary">
+                Apply
+              </Button>
+            </Stack>
+            <hr></hr>
+          </React.Fragment>
         ))}
       </Stack>
-      <br /><br /><br /><br /><br />
+      <br/><br/><br/><br/>
     </>
   );
 };
 
 export default ContSearch;
+

@@ -7,6 +7,7 @@ const ContProfile = () => {
     firstName: '',
     lastName: '',
     username: '',
+    email:'',
     rate: 0,
     resume: '',
   });
@@ -18,12 +19,14 @@ const ContProfile = () => {
       firstName: 'Mary',
       lastName: 'Phillips',
       username: 'mphillip',
+      email:'mphillip@trinity.edu',
       rate: 30,
       resume: '...'
     });
   }, []); // Empty dependency array to run only once
 
   return (
+    <>
     <Box mt={4}>
       <Card variant="outlined">
         <CardContent>
@@ -52,6 +55,11 @@ const ContProfile = () => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Email</Typography>
+              <Typography variant="body1">{profile.email}</Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
               <Typography variant="h6">Rate ($/hr)</Typography>
               <Typography variant="body1">{profile.rate}</Typography>
             </Grid>
@@ -64,6 +72,7 @@ const ContProfile = () => {
         </CardContent>
       </Card>
     </Box>
+     </>
   );
 }
 

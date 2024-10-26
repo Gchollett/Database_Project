@@ -6,7 +6,7 @@ import ContHome from './containers/contractor/ContHome';
 import ContProfile from './containers/contractor/ContProfile';
 import ContApplications from './containers/contractor/ContApplications';
 import ContSearch from './containers/contractor/ContSearch';
-import CompSearch from './containers/company/CompSearch';
+import CompCreate from './containers/company/CompCreate';
 import CompHome from './containers/company/CompHome';
 import CompApplications from './containers/company/CompApplications';
 import CompProfile from './containers/company/CompProfile';
@@ -28,7 +28,7 @@ function App() {
         </Route>
         <Route path="/comp/" element={<CompLayout/>}>
           <Route path="jobs" element={<CompHome/>}/>
-          <Route path="create" element={<CompSearch/>}/>
+          <Route path="create" element={<CompCreate/>}/>
           <Route path="applications" element={<CompApplications/>}/>
           <Route path="profile" element={<CompProfile/>}/>
         </Route>

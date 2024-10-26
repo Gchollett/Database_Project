@@ -10,7 +10,7 @@ const ContLayout = () => {
 
     useEffect(() => {
       setLocationValue(location.pathname)
-    });
+    }, []);
   return (
     <>
         <div id="page-container">

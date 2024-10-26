@@ -27,7 +27,7 @@ const ContApplications = () => {
           },
         ])
       
-    })
+    }, []);
 
     return (
       <>
@@ -35,9 +35,8 @@ const ContApplications = () => {
       <Stack spacing={4}>
       <hr></hr>
       {jobs.map((job, index) => (
-        <>
+        <React.Fragment key={index}>
         <Stack
-          key={index}
           direction="row"
           justifyContent="space-between"
           alignItems="center"
@@ -60,7 +59,7 @@ const ContApplications = () => {
           </Stack>
         </Stack>
         <hr></hr>
-        </>
+        </React.Fragment>
       ))}
     </Stack>
       </>

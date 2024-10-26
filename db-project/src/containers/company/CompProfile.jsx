@@ -6,6 +6,7 @@ const CompanyProfile = () => {
     companyID: '',
     name: '',
     username: '',
+    email:''
   });
 
   useEffect(() => {
@@ -14,6 +15,9 @@ const CompanyProfile = () => {
       companyID: '00123',
       name: 'Tech Innovations Ltd.',
       username: 'techinnovations',
+      email: 'hire@techinnovations.com',
+      first:'Ted',
+      last:'Menendez',
     });
   }, []); // Empty dependency array to run only once
 
@@ -38,6 +42,18 @@ const CompanyProfile = () => {
             <Grid item xs={12} sm={6}>
               <Typography variant="h6">Username</Typography>
               <Typography variant="body1">{company.username}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Email</Typography>
+              <Typography variant="body1">{company.email}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Admin First Name</Typography>
+              <Typography variant="body1">{company.first}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Admin Last Name</Typography>
+              <Typography variant="body1">{company.last}</Typography>
             </Grid>
           </Grid>
         </CardContent>
