@@ -49,7 +49,7 @@ const ContHeader = ({ location }) => {
             alignItems="center"
         >     
             <Grid item xs={4}>
-                <a href="/">
+                <a href="/cont/jobs">
                     <img src={logo} className="image" alt="Logo" />
                 </a>
             </Grid>
