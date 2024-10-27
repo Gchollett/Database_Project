@@ -29,7 +29,7 @@ const jobs = [
   },
 ];
 
-const CompHome = () => {
+const CompJobs = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredJobs, setFilteredJobs] = useState(jobs);
 
@@ -120,5 +120,5 @@ const CompHome = () => {
   );
 };
 
-export default CompHome;
+export default CompJobs;
 
