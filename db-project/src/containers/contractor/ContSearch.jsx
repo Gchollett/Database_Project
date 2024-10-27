@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, Chip, TextField } from '@mui/material';
+import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, Chip, TextField, Tooltip } from '@mui/material';
 
 const ContSearch = () => {
   const [jobs, setJobs] = useState([]);
@@ -140,11 +140,18 @@ const ContSearch = () => {
                   ))}
                 </Stack>
               </Stack>
-
-              {/* Apply button */}
+              <Stack spacing={1} alignItems="flex-end">
+              {job == jobs[0] && 
+                <Tooltip title="This job is recommended to you in order to maximize profits based on your current accepted jobs" arrow>
+                  <Typography variant="subtitle2" color="primary">
+                    Top Pick For You
+                  </Typography>
+                </Tooltip>
+              }
               <Button variant="contained" color="primary">
-                Apply
+                  Apply
               </Button>
+              </Stack>
             </Stack>
             <hr></hr>
           </React.Fragment>
