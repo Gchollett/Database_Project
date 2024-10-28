@@ -5,7 +5,11 @@ const sign = (payload) => {
 }
 
 const parse = (token) => {
-    return jwt.parse(token,process.env.JWT_SEC)
+    try{
+        return jwt.verify(token,process.env.JWT_SEC)
+    }catch(e){
+        return ""
+    }
 }
 
 module.exports = {sign,parse}

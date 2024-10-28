@@ -16,7 +16,7 @@ model User {
 }
 
 model company {
-  compid   Int     @id
+  compid   Int     @id @default(autoincrement())
   name     String  @db.VarChar(50)
   username String? @db.VarChar(50)
   User     User?   @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction)
@@ -24,7 +24,7 @@ model company {
 }
 
 model contractor {
-  contid         Int              @id
+  contid         Int              @id @default(autoincrement())
   rate           Decimal?         @db.Money
   firstname      String?          @db.VarChar(50)
   lastname       String?          @db.VarChar(50)
@@ -45,10 +45,10 @@ model contractortag {
 }
 
 model job {
-  jobid          Int              @id
+  jobid          Int              @id @default(autoincrement())
   title          String?          @db.VarChar(50)
-  pay            String?          @db.VarChar(50)
-  remote         String?          @db.VarChar(50)
+  pay            Decimal?          @db.Money
+  remote         Boolean?          
   start          DateTime?        @db.Timestamp(6)
   end            DateTime?        @db.Timestamp(6)
   description    String?          @db.VarChar(50)
