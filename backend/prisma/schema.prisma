@@ -53,7 +53,7 @@ model job {
   end            DateTime?        @db.Timestamp(6)
   description    String?          @db.VarChar(50)
   compid         Int?
-  company        company?         @relation(fields: [compid], references: [compid], onDelete: NoAction, onUpdate: NoAction)
+  company        company?         @relation(fields: [compid], references: [compid], onDelete: Cascade, onUpdate: Cascade)
   jobapplication jobapplication[]
   jobtag         jobtag[]
 }
@@ -62,8 +62,8 @@ model jobapplication {
   contid     Int
   jobid      Int
   status     String?    @db.VarChar(50)
-  contractor contractor @relation(fields: [contid], references: [contid], onDelete: NoAction, onUpdate: NoAction)
-  job        job        @relation(fields: [jobid], references: [jobid], onDelete: NoAction, onUpdate: NoAction)
+  contractor contractor @relation(fields: [contid], references: [contid], onDelete: Cascade, onUpdate: Cascade)
+  job        job        @relation(fields: [jobid], references: [jobid], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([contid, jobid])
 }

@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var swaggerDocs = require('./utilities/swagger')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/jobs',jobsRouter);
 app.use('/applications',applicationRouter)
+swaggerDocs(app,process.env.PORT || '5000')
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
