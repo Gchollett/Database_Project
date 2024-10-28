@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,80 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  username   String       @id @db.VarChar(50)
+  password   String       @db.VarChar(50)
+  email      String?      @db.VarChar(50)
+  company    company[]
+  contractor contractor[]
+}
+
+model company {
+  compid   Int     @id
+  name     String  @db.VarChar(50)
+  username String? @db.VarChar(50)
+  User     User?   @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction)
+  job      job[]
+}
+
+model contractor {
+  contid         Int              @id
+  rate           Decimal?         @db.Money
+  firstname      String?          @db.VarChar(50)
+  lastname       String?          @db.VarChar(50)
+  resume         String?          @db.VarChar(50)
+  username       String?          @db.VarChar(50)
+  User           User?            @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction)
+  contractortag  contractortag[]
+  jobapplication jobapplication[]
+}
+
+model contractortag {
+  contid     Int
+  name       String     @db.VarChar(50)
+  contractor contractor @relation(fields: [contid], references: [contid], onDelete: NoAction, onUpdate: NoAction)
+  tag        tag        @relation(fields: [name], references: [name], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([contid, name])
+}
+
+model job {
+  jobid          Int              @id
+  title          String?          @db.VarChar(50)
+  pay            String?          @db.VarChar(50)
+  remote         String?          @db.VarChar(50)
+  start          DateTime?        @db.Timestamp(6)
+  end            DateTime?        @db.Timestamp(6)
+  description    String?          @db.VarChar(50)
+  compid         Int?
+  company        company?         @relation(fields: [compid], references: [compid], onDelete: NoAction, onUpdate: NoAction)
+  jobapplication jobapplication[]
+  jobtag         jobtag[]
+}
+
+model jobapplication {
+  contid     Int
+  jobid      Int
+  status     String?    @db.VarChar(50)
+  contractor contractor @relation(fields: [contid], references: [contid], onDelete: NoAction, onUpdate: NoAction)
+  job        job        @relation(fields: [jobid], references: [jobid], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([contid, jobid])
+}
+
+model jobtag {
+  jobid Int
+  name  String @db.VarChar(50)
+  job   job    @relation(fields: [jobid], references: [jobid], onDelete: NoAction, onUpdate: NoAction)
+  tag   tag    @relation(fields: [name], references: [name], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([jobid, name])
+}
+
+model tag {
+  name          String          @id @db.VarChar(50)
+  contractortag contractortag[]
+  jobtag        jobtag[]
 }
