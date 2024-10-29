@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import './App.css'
 import LogIn from './containers/LogIn';
 import ContJobs from './containers/contractor/ContJobs';
@@ -14,22 +14,27 @@ import ContLayout from './components/contractor/ContLayout';
 
 function App() {
 
+  const PrivateRoute = ({ children }) => {
+    const token = localStorage.getItem('authToken');
+    return token ? children : <Navigate to="/" />;
+  };
+
   return (
     <>
     <BrowserRouter>
       <Routes>
         <Route index element={<LogIn/>}/>
-        <Route path="/cont/" element={<ContLayout/>}>
-          <Route path="jobs" element={<ContJobs/>}/>
-          <Route path="search" element={<ContSearch/>}/>
-          <Route path="applications" element={<ContApplications/>}/>
-          <Route path="profile" element={<ContProfile/>}/>
+        <Route path="/cont/" element={<PrivateRoute><ContLayout/></PrivateRoute>}>
+          <Route path="jobs" element={<PrivateRoute><ContJobs/></PrivateRoute>}/>
+          <Route path="search" element={<PrivateRoute><ContSearch/></PrivateRoute>}/>
+          <Route path="applications" element={<PrivateRoute><ContApplications/></PrivateRoute>}/>
+          <Route path="profile" element={<PrivateRoute><ContProfile/></PrivateRoute>}/>
         </Route>
-        <Route path="/comp/" element={<CompLayout/>}>
-          <Route path="jobs" element={<CompJobs/>}/>
-          <Route path="create" element={<CompCreate/>}/>
-          <Route path="applications" element={<CompApplications/>}/>
-          <Route path="profile" element={<CompProfile/>}/>
+        <Route path="/comp/" element={<PrivateRoute><CompLayout/></PrivateRoute>}>
+          <Route path="jobs" element={<PrivateRoute><CompJobs/></PrivateRoute>}/>
+          <Route path="create" element={<PrivateRoute><CompCreate/></PrivateRoute>}/>
+          <Route path="applications" element={<PrivateRoute><CompApplications/></PrivateRoute>}/>
+          <Route path="profile" element={<PrivateRoute><CompProfile/></PrivateRoute>}/>
         </Route>
       </Routes>
     </BrowserRouter>

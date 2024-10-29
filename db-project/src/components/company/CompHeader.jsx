@@ -40,6 +40,11 @@ const CompHeader = ({ location }) => {
         setAnchorEl(null);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        navigate('/'); // Redirect to login or home
+      };      
+
     return (
         <Grid
             columns={16}
@@ -85,7 +90,7 @@ const CompHeader = ({ location }) => {
                                 <Tab value={1} label="Create" href="/comp/create" />
                                 <Tab value={2} label="Applications" href="/comp/applications" />
                                 <Tab value={3} label="Profile" href="/comp/profile" />
-                                <Tab value={4} label="Log Out" href="/" />
+                                <Tab value={4} label="Log Out" onClick={handleLogout} />
                             </Tabs>
                         </Menu>
                     </ThemeProvider>
@@ -102,7 +107,7 @@ const CompHeader = ({ location }) => {
                             <Tab value={1} label="Create" href="/comp/create" />
                             <Tab value={2} label="Applications" href="/comp/applications" />
                             <Tab value={3} label="Profile" href="/comp/profile" />
-                            <Tab value={4} label="Log Out" href="/" />
+                            <Tab value={4} label="Log Out" onClick={handleLogout} />
                         </Tabs>
                     </ThemeProvider>
                 </div>
