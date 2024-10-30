@@ -14,16 +14,33 @@ const ContProfile = () => {
   });
 
   useEffect(() => {
-    // Setting initial profile data
-    setProfile({
-      userID: 'U123456',
-      firstName: 'Mary',
-      lastName: 'Phillips',
-      username: 'mphillip',
-      email: 'mphillip@trinity.edu',
-      rate: 30,
-      resume: '...',
-      tags: ['React', 'JavaScript', 'Web Development', 'CSS'], // Sample tags
+    const token = localStorage.getItem('authToken'); // or however you're storing the token
+
+    fetch(`${import.meta.env.VITE_API_URL}/users/profile`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(data => setProfile({
+      userID: '...', // TODO
+      firstName: data.contractor[0].firstname,
+      lastName: data.contractor[0].lastname,
+      username: data.username,
+      email: data.email,
+      rate: data.contractor[0].rate,
+      resume: data.contractor[0].resume,
+      tags: ['...', '...', '...'], // TODO
+    }))
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
     });
   }, []); // Empty dependency array to run only once
 

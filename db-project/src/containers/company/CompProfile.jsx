@@ -8,16 +8,32 @@ const CompanyProfile = () => {
     username: '',
     email:''
   });
-
   useEffect(() => {
-    // Setting initial company data
-    setCompany({
-      companyID: '00123',
-      name: 'Tech Innovations Ltd.',
-      username: 'techinnovations',
-      email: 'hire@techinnovations.com',
-      first:'Ted',
-      last:'Menendez',
+    const token = localStorage.getItem('authToken'); // or however you're storing the token
+
+    fetch(`${import.meta.env.VITE_API_URL}/users/profile`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(data =>  setCompany({
+        companyID: '...',
+        name: data.company[0].name,
+        username: data.username,
+        email: data.email,
+        first:'...', // TODO
+        last:'...', // TODO
+      }))
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
     });
   }, []); // Empty dependency array to run only once
 

@@ -5,11 +5,13 @@ import logo from '../../assets/images/logo.png';
 import { Button, Grid, Menu, Tabs, ThemeProvider } from "@mui/material";
 import { theme } from '../Theme';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom';
 
 const ContHeader = ({ location }) => {
     const [locationValue, setLocationValue] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
 
     useEffect(() => {
         switch(location) {
@@ -39,6 +41,11 @@ const ContHeader = ({ location }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        navigate('/'); // Redirect to login or home
+    };  
 
     return (
         <Grid
@@ -83,9 +90,9 @@ const ContHeader = ({ location }) => {
                             >
                                 <Tab value={0} label="My Jobs" href="/cont/jobs" />
                                 <Tab value={1} label="Search" href="/cont/search" />
-                                <Tab value={2} label="Applications" href="/cont/capplications" />
+                                <Tab value={2} label="Applications" href="/cont/applications" />
                                 <Tab value={3} label="Profile" href="/cont/profile" />
-                                <Tab value={4} label="Log Out" href="/" />
+                                <Tab value={4} label="Log Out" onClick={handleLogout} />
                             </Tabs>
                         </Menu>
                     </ThemeProvider>
@@ -102,7 +109,7 @@ const ContHeader = ({ location }) => {
                             <Tab value={1} label="Search" href="/cont/search" />
                             <Tab value={2} label="Applications" href="/cont/applications" />
                             <Tab value={3} label="Profile" href="/cont/profile" />
-                            <Tab value={4} label="Log Out" href="/" />
+                            <Tab value={4} label="Log Out" onClick={handleLogout} />
                         </Tabs>
                     </ThemeProvider>
                 </div>

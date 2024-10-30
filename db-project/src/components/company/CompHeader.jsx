@@ -5,11 +5,13 @@ import logo from '../../assets/images/logo.png';
 import { Button, Grid, Menu, Tabs, ThemeProvider } from "@mui/material";
 import { theme } from '../Theme';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom';
 
 const CompHeader = ({ location }) => {
     const [locationValue, setLocationValue] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
 
     useEffect(() => {
         switch(location) {
@@ -43,7 +45,7 @@ const CompHeader = ({ location }) => {
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         navigate('/'); // Redirect to login or home
-      };      
+    };      
 
     return (
         <Grid
