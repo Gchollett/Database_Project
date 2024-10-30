@@ -30,7 +30,6 @@ const ContProfile = () => {
       return res.json();
     })
     .then(data => setProfile({
-      userID: '...', // TODO
       firstName: data.contractor[0].firstname,
       lastName: data.contractor[0].lastname,
       username: data.username,
@@ -53,10 +52,6 @@ const ContProfile = () => {
               My Profile
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">User ID</Typography>
-                <Typography variant="body1">{profile.userID}</Typography>
-              </Grid>
 
               <Grid item xs={12} sm={6}>
                 <Typography variant="h6">First Name</Typography>

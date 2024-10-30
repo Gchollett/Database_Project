@@ -3,7 +3,6 @@ import { Typography, Grid, Card, CardContent, Box } from '@mui/material';
 
 const CompanyProfile = () => {
   const [company, setCompany] = useState({
-    companyID: '',
     name: '',
     username: '',
     email:''
@@ -25,12 +24,9 @@ const CompanyProfile = () => {
       return res.json();
     })
     .then(data =>  setCompany({
-        companyID: '...',
         name: data.company[0].name,
         username: data.username,
         email: data.email,
-        first:'...', // TODO
-        last:'...', // TODO
       }))
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
@@ -45,10 +41,6 @@ const CompanyProfile = () => {
             Company Profile
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Company ID</Typography>
-              <Typography variant="body1">{company.companyID}</Typography>
-            </Grid>
 
             <Grid item xs={12} sm={6}>
               <Typography variant="h6">Company Name</Typography>
@@ -62,14 +54,6 @@ const CompanyProfile = () => {
             <Grid item xs={12} sm={6}>
               <Typography variant="h6">Email</Typography>
               <Typography variant="body1">{company.email}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Admin First Name</Typography>
-              <Typography variant="body1">{company.first}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Admin Last Name</Typography>
-              <Typography variant="body1">{company.last}</Typography>
             </Grid>
           </Grid>
         </CardContent>
