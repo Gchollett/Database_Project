@@ -244,7 +244,12 @@ router.get('/profile', authorize(["Contractors","Companies"]), async function(re
           firstname: true,
           lastname: true,
           resume: true,
-          rate: true
+          rate: true,
+          contractortag:{
+            select:{
+              name:true
+            }
+          }
         }
       },
       company: {
