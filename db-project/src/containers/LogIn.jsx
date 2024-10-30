@@ -2,7 +2,6 @@ import { useState } from 'react';
 import logo from '../assets/images/logo.png';
 import { Grid, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import { fetchWithAuth } from '../utils/api';
 
 const LogIn = () => {
   const [username, setUsername] = useState(''); // State for username
@@ -19,29 +18,16 @@ const LogIn = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
-      });
+      })
       if (!response.ok) {
         throw new Error('Login failed'); // Handle error appropriately
       }
   
-      response.text().then(data => {
-        localStorage.setItem('authToken', data)}); // Adjust based on your API response
-  
-      //const data = await response.json();
-      //const token = data.token;
-      //use "Authorization": "Bearer <token>" in headers
-
-
-      // Store the token in localStorage
-      fetchWithAuth(`${import.meta.env.VITE_API_URL}/users/type`,{
-        method: "GET",
-      }).then(res => {
-        if(res.ok)res.json().then(data => {
-          console.log(data.type)
-          if(data.type == 'Contractor') navigate('/cont/jobs');
-          else if(data.type == 'Company') navigate('/comp/jobs');
-        })
-      })
+      response.json().then(data => {
+        localStorage.setItem('authToken', data.token)
+        if(data.userType == 'Contractor') navigate('/cont/jobs');
+        else if(data.userType == 'Company') navigate('/comp/jobs');
+      }); // Adjust based on your API response
     } catch (error) {
       alert(error.message); // Display error message
     }

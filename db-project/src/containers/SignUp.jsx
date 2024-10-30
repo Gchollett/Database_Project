@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import logo from '../assets/images/logo.png'; // Adjust the path as necessary
-import { fetchWithAuth } from '../utils/api';
 
 const SignUp = () => {
   const [position, setposition] = useState('Contractor');
@@ -67,17 +66,14 @@ const SignUp = () => {
         },
         body: JSON.stringify(formData),
       });
-      console.log(formData)
       if (response.status === 201) { // Check for successful sign-up
         setSnackbarMessage('Successful sign up');
         setSnackbarSeverity('success');
-        response.text().then(data => localStorage.setItem('authToken', data));
-        fetchWithAuth(`${import.meta.env.VITE_API_URL}/users/type`,{
-          method: "GET",
-        }).then(res => res.json()).then(data => {
-          if(data.type === 'Contractor') navigate('/cont/jobs');
-          else if(data.type === 'Company') navigate('/comp/jobs');
-        })
+        response.json().then(data => {
+          localStorage.setItem('authToken', data.token)
+          if(data.userType == 'Contractor') navigate('/cont/jobs');
+          else if(data.userType == 'Company') navigate('/comp/jobs');
+        });
       } else if (response.status === 400) { // Check for unsuccessful sign-up
         console.log(await response.text());
         setSnackbarMessage('User already exists');

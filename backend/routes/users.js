@@ -82,8 +82,17 @@ const companySchema = z.object({
  *        content:
  *          application/json:
  *            schema: 
- *              type: string
- *              default: eyJhbGciOiJIUzI1NiJ9.VGltRG9n.V54ePDdiH6QvCfujHabncCS5jlWG7ayH0GKaUe70AjI
+ *              type: object
+ *              properties:
+ *                userType:
+ *                  type: string
+ *                  enum:
+ *                    - Contractor
+ *                    - Company
+ *                  default: Contractor
+ *                token:
+ *                  type: string
+ *                  default: eyJhbGciOiJIUzI1NiJ9.VGltRG9n.V54ePDdiH6QvCfujHabncCS5jlWG7ayH0GKaUe70AjI
  *      400:
  *        description: "Bad Request"
  */
@@ -124,7 +133,7 @@ router.post('/create',async (req,res) => {
     }
     prisma.user.create({
       data
-    }).then(res.status(201).send(sign(result.data.username)))
+    }).then(res.status(201).send({userType:req.body.position,token:sign(result.data.username)}))
   }
 })
 
@@ -163,8 +172,17 @@ const userLoginSchema = z.object({
  *        content:
  *          application/json:
  *            schema:
- *              type: string
- *              default: eyJhbGciOiJIUzI1NiJ9.VGltRG9n.V54ePDdiH6QvCfujHabncCS5jlWG7ayH0GKaUe70AjI
+ *              type: object
+ *              properties:
+ *                userType:
+ *                  type: string
+ *                  enum:
+ *                    - Contractor
+ *                    - Company
+ *                  default: Contractor
+ *                token:
+ *                  type: string
+ *                  default: eyJhbGciOiJIUzI1NiJ9.VGltRG9n.V54ePDdiH6QvCfujHabncCS5jlWG7ayH0GKaUe70AjI
  *      400:
  *        description: "Login Rejected"
  *        
@@ -173,10 +191,16 @@ router.post('/login',async (req,res) => {
   const result = userLoginSchema.safeParse(req.body)
   if(!result.success)res.status(400).send("Incorrect Request Body")
   else{
-    const user = await prisma.user.findUnique({where:{username:result.data.username}})
+    const user = await prisma.user.findUnique({where:{username:result.data.username},include:{contractor:true,company:true}})
     if(!user)res.status(400).send("Username Does Not Exist")
     else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password") //else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password")
-    else res.status(200).send(sign(user.username))
+    else {
+      var userType = ""
+      if(user.company.length > 0) userType = "Company"
+      else if(user.contractor.length > 0) userType = "Contractor"
+      else {res.status(500).send("User Does Not Have a Position");return;}
+      res.status(200).send({userType,token:sign(user.username)})
+    }
   }
 })
 
