@@ -107,7 +107,7 @@ router.post('/create',async (req,res) => {
         return;
       }
       else{
-        data = {...data,contractor:{create:[contractor.data]}}
+        data = {...data,contractor:{create:{...contractor.data,contractortag:{create:contractor.data.contractortag.map((x) => ({name:x}))}}}}
       }
     }else if(req.body.position == "Company"){
       const company = companySchema.safeParse(req.body)
@@ -119,7 +119,7 @@ router.post('/create',async (req,res) => {
         data = {...data,company:{create:[company.data]}}
       }
     }else{
-      res.status(400).send("Bad Request")
+      res.status(400).send("No Position Specified")
       return;
     }
     prisma.user.create({
@@ -170,13 +170,12 @@ const userLoginSchema = z.object({
  *        
  */
 router.post('/login',async (req,res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
   const result = userLoginSchema.safeParse(req.body)
   if(!result.success)res.status(400).send("Incorrect Request Body")
   else{
     const user = await prisma.user.findUnique({where:{username:result.data.username}})
     if(!user)res.status(400).send("Username Does Not Exist")
-    else if((user.password) != result.data.password)res.status(400).send("Incorrect Password") //else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password")
+    else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password") //else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password")
     else res.status(200).send(sign(user.username))
   }
 })
@@ -233,8 +232,46 @@ router.get('/profile', authorize(["Contractors","Companies"]), async function(re
   })
   if(user) res.send(user);
   else {
-    res.sendStatus(400)
+    res.status(400).send("User Does Not Exist")
   }
 });
+
+
+/**
+ * @openapi
+ * /users/type:
+ *  get:
+ *    tags:
+ *      - User
+ *    summary: Gets the user type for Authorized Users.
+ *    parameters:
+ *      - in: header
+ *        name: token
+ *        schema:
+ *          type: string
+ *        description: "Authentification Token"
+ *        required: true
+ *    responses:
+ *      200:
+ *        description: "User Type Successfully Found"
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                type:
+ *                  type: string
+ *                  default: Contractor
+ *      401:
+ *        description: "Not Authorized"
+ *      500:
+ *        description: "Authentification Error"
+ */
+router.get('/type',authorize(['Contractors','Companies']),(req,res) => {
+  const user = res.locals.user
+  if(user.contid) res.status(200).send({type:'Contractor'})
+  else if(user.compid) res.status(200).send({type:'Company'})
+  else res.status(500).send('Authoriziation Error')
+})
 
 module.exports = router;

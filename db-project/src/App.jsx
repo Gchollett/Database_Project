@@ -13,6 +13,7 @@ import CompLayout from './components/company/CompLayout';
 import ContLayout from './components/contractor/ContLayout';
 import SignUp from './containers/SignUp';
 
+
 function App() {
 
   const PrivateRoute = ({ children }) => {

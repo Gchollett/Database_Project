@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import logo from '../assets/images/logo.png';
 import { Grid, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { fetchWithAuth } from '../utils/api';
 
 const LogIn = () => {
   const [username, setUsername] = useState(''); // State for username
@@ -12,20 +13,19 @@ const LogIn = () => {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://localhost:5001/users/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
-      console.log('Request Headers:', username, password);
-      console.log(response)
       if (!response.ok) {
         throw new Error('Login failed'); // Handle error appropriately
       }
   
-      const token = response; // Adjust based on your API response
+      response.text().then(data => {
+        localStorage.setItem('authToken', data)}); // Adjust based on your API response
   
       //const data = await response.json();
       //const token = data.token;
@@ -33,16 +33,15 @@ const LogIn = () => {
 
 
       // Store the token in localStorage
-      localStorage.setItem('authToken', token);
-  
-      // Navigate based on username
-      if (username.startsWith('1')) {
-        navigate('/cont/jobs');
-      } else if (username.startsWith('2')) {
-        navigate('/comp/jobs');
-      } else {
-        alert('Invalid username. Please enter a username starting with "1" or "2".');
-      }
+      fetchWithAuth(`${import.meta.env.VITE_API_URL}/users/type`,{
+        method: "GET",
+      }).then(res => {
+        if(res.ok)res.json().then(data => {
+          console.log(data.type)
+          if(data.type == 'Contractor') navigate('/cont/jobs');
+          else if(data.type == 'Company') navigate('/comp/jobs');
+        })
+      })
     } catch (error) {
       alert(error.message); // Display error message
     }

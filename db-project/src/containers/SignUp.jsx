@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -12,22 +12,10 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import logo from '../assets/images/logo.png'; // Adjust the path as necessary
-
-const availableTags = [
-  'Web Development',
-  'Mobile Development',
-  'Data Science',
-  'Design',
-  'Project Management',
-  'Marketing',
-  'Finance',
-  'Consulting',
-  'Engineering',
-  'Sales',
-];
+import { fetchWithAuth } from '../utils/api';
 
 const SignUp = () => {
-  const [userType, setUserType] = useState('contractor');
+  const [position, setposition] = useState('Contractor');
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -35,15 +23,16 @@ const SignUp = () => {
     lastname: '',
     email: '',
     name: '', // For company name
-    rate: '',     // For contractor rate
+    rate: 0,     // For contractor rate
     resume: '',   // For contractor resume
-    contractorTags: [],     // For selected tags
-    userType: 'contractor', // Add userType to formData
+    contractortag: [],     // For selected tags
+    position: 'Contractor', // Add position to formData
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [availableTags,setAvailableTags] = useState([]);
 
   const navigate = useNavigate(); // Hook for programmatic navigation
 
@@ -52,32 +41,45 @@ const SignUp = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleUserTypeChange = (e) => {
-    const selectedUserType = e.target.value;
-    setUserType(selectedUserType);
-    setFormData((prevData) => ({ ...prevData, userType: selectedUserType, contractorTags: [] })); // Reset tags for company
+  const handlepositionChange = (e) => {
+    const selectedposition = e.target.value;
+    setposition(selectedposition);
+    setFormData((prevData) => ({ ...prevData, position: selectedposition, contractortag: [] })); // Reset tags for company
   };
 
   const handleTagChange = (e) => {
     const { value } = e.target;
-    setFormData((prevData) => ({ ...prevData, contractorTags: value }));
+    setFormData((prevData) => ({ ...prevData, contractortag: value }));
   };
+
+  const handleRateChange = (e) => {
+    const {value} = e.target;
+    setFormData((prevData) => ({...prevData,rate:parseInt(value)}))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5001/users/create', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-
+      console.log(formData)
       if (response.status === 201) { // Check for successful sign-up
         setSnackbarMessage('Successful sign up');
         setSnackbarSeverity('success');
+        response.text().then(data => localStorage.setItem('authToken', data));
+        fetchWithAuth(`${import.meta.env.VITE_API_URL}/users/type`,{
+          method: "GET",
+        }).then(res => res.json()).then(data => {
+          if(data.type === 'Contractor') navigate('/cont/jobs');
+          else if(data.type === 'Company') navigate('/comp/jobs');
+        })
       } else if (response.status === 400) { // Check for unsuccessful sign-up
+        console.log(await response.text());
         setSnackbarMessage('User already exists');
         setSnackbarSeverity('error');
       } else {
@@ -97,6 +99,10 @@ const SignUp = () => {
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/tags`).then((res) => res.json()).then(data => setAvailableTags(data))
+  },[])
 
   return (
     <>
@@ -118,9 +124,9 @@ const SignUp = () => {
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth margin="normal">
               <InputLabel>User Type</InputLabel>
-              <Select value={userType} onChange={handleUserTypeChange}>
-                <MenuItem value="contractor">Contractor</MenuItem>
-                <MenuItem value="company">Company</MenuItem>
+              <Select value={position} onChange={handlepositionChange}>
+                <MenuItem value="Contractor">Contractor</MenuItem>
+                <MenuItem value="Company">Company</MenuItem>
               </Select>
             </FormControl>
 
@@ -177,7 +183,7 @@ const SignUp = () => {
               onChange={handleChange}
             />
 
-            {userType === 'company' && (
+            {position === 'Company' && (
               <TextField
                 id="name"
                 name="name"
@@ -190,7 +196,7 @@ const SignUp = () => {
               />
             )}
 
-            {userType === 'contractor' && (
+            {position === 'Contractor' && (
               <>
                 <TextField
                   id="rate"
@@ -201,7 +207,7 @@ const SignUp = () => {
                   fullWidth
                   type="number"
                   value={formData.rate}
-                  onChange={handleChange}
+                  onChange={handleRateChange}
                 />
                 <TextField
                   id="resume"
@@ -218,14 +224,14 @@ const SignUp = () => {
                   <InputLabel>Tags</InputLabel>
                   <Select
                     multiple
-                    value={formData.contractorTags}
+                    value={formData.contractortag}
                     onChange={handleTagChange}
                     renderValue={(selected) => selected.join(', ')}
                   >
                     {availableTags.map((tag) => (
-                      <MenuItem key={tag} value={tag}>
-                        <input type="checkbox" checked={formData.contractorTags.indexOf(tag) > -1} readOnly />
-                        {tag}
+                      <MenuItem key={tag.name} value={tag.name}>
+                        <input type="checkbox" checked={formData.contractortag.indexOf(tag.name) > -1} readOnly />
+                        {tag.name}
                       </MenuItem>
                     ))}
                   </Select>

@@ -29,3 +29,5 @@ const prisma = new PrismaClient();
 router.get('/',async (req,res) => {
     res.status(200).send(await prisma.tag.findMany())
 })
+
+module.exports = router

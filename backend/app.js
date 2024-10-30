@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var jobsRouter = require('./routes/jobs');
 var applicationRouter = require('./routes/applications');
+var tagRouter = require('./routes/tags')
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/jobs', jobsRouter);
 app.use('/applications', applicationRouter);
+app.use('/tags',tagRouter);
 
 swaggerDocs(app, process.env.PORT || '5000');
 
