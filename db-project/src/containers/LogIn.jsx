@@ -12,7 +12,7 @@ const LogIn = () => {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://localhost:5000/users/login', {
+      const response = await fetch('http://localhost:5001/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,9 +25,13 @@ const LogIn = () => {
         throw new Error('Login failed'); // Handle error appropriately
       }
   
-      const data = await response.json();
-      const token = data.token; // Adjust based on your API response
+      const token = response; // Adjust based on your API response
   
+      //const data = await response.json();
+      //const token = data.token;
+      //use "Authorization": "Bearer <token>" in headers
+
+
       // Store the token in localStorage
       localStorage.setItem('authToken', token);
   

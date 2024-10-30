@@ -170,12 +170,13 @@ const userLoginSchema = z.object({
  *        
  */
 router.post('/login',async (req,res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
   const result = userLoginSchema.safeParse(req.body)
   if(!result.success)res.status(400).send("Incorrect Request Body")
   else{
     const user = await prisma.user.findUnique({where:{username:result.data.username}})
     if(!user)res.status(400).send("Username Does Not Exist")
-    else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password")
+    else if((user.password) != result.data.password)res.status(400).send("Incorrect Password") //else if(decode(user.password) != result.data.password)res.status(400).send("Incorrect Password")
     else res.status(200).send(sign(user.username))
   }
 })
