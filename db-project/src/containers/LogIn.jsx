@@ -86,9 +86,22 @@ const LogIn = () => {
               type="password" // Added type for better security
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" variant="outlined" size="large">
-              Log In
-            </Button>
+            <Grid container spacing={2} style={{ marginTop: '0px' }}>
+              <Grid item xs={12}>
+                <Button type="submit" variant="outlined" size="large" >
+                  Log In
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Button 
+                  variant="outlined" 
+                  size="large" 
+                  onClick={() => navigate('/signup')} // Navigate to sign-up page
+                >
+                  Sign Up
+                </Button>
+              </Grid>
+            </Grid>
           </form>
         </Grid>
       </Grid>

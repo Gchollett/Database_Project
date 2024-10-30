@@ -11,6 +11,7 @@ import CompApplications from './containers/company/CompApplications';
 import CompProfile from './containers/company/CompProfile';
 import CompLayout from './components/company/CompLayout';
 import ContLayout from './components/contractor/ContLayout';
+import SignUp from './containers/SignUp';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route index element={<LogIn/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
         <Route path="/cont/" element={<PrivateRoute><ContLayout/></PrivateRoute>}>
           <Route path="jobs" element={<PrivateRoute><ContJobs/></PrivateRoute>}/>
           <Route path="search" element={<PrivateRoute><ContSearch/></PrivateRoute>}/>
