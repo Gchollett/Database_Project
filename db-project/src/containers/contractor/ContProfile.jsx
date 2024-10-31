@@ -36,7 +36,7 @@ const ContProfile = () => {
       email: data.email,
       rate: data.contractor[0].rate,
       resume: data.contractor[0].resume,
-      tags: ['...', '...', '...'], // TODO
+      tags: data.contractor[0].contractortag.map(item => item.name), // TODO
     }))
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
@@ -95,6 +95,7 @@ const ContProfile = () => {
           </CardContent>
         </Card>
       </Box>
+      <br></br><br></br><br></br><br></br>
     </>
   );
 }
