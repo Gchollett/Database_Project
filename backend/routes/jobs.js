@@ -143,14 +143,14 @@ router.post('/create', authorize(["Companies"]), async (req,res) => {
     const companyUser = res.locals.user
     const jobData = jobSchema.safeParse(req.body)
     if(!jobData.success){
-        res.status(400).send("Bad Request")
+        res.status(400).send(`Bad Request with error: ${jobData.error}`)
         return;
     }
     prisma.job.create({
         data:{
             ...jobData.data,
             compid: companyUser.compid,
-            jobtag: {connect: jobData.tags}
+            jobtag: {create:jobData.data.jobtag.map((tag) => ({name:tag}))}
         }
     }).then(res.status(201).send("Job Created"))
 })

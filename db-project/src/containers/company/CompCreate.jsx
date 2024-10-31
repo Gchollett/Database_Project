@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Stack,
   Button,
@@ -14,46 +14,69 @@ import {
 
 const CompCreate = () => {
   const [jobTitle, setJobTitle] = useState('');
-  const [hourlyPay, setHourlyPay] = useState('');
-  const [isRemote, setIsRemote] = useState('No');
+  const [hourlyPay, setHourlyPay] = useState(0.0);
+  const [isRemote, setIsRemote] = useState(false);
   const [startDate, setStartDate] = useState(''); // Start with empty
   const [endDate, setEndDate] = useState(''); // Start with empty
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState([]);
+  const [availableTags, setAvailableTags] = useState([])
   const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar state
 
-  const handleCreateJob = () => {
+  const handleCreateJob = async () => {
     // Validate inputs (optional)
     if (!jobTitle || !hourlyPay || !startDate || !endDate || !description || tags.length === 0) {
-      alert('Please fill in all fields.');
-      return;
+        alert('Please fill in all fields.');
+        return;
     }
 
-    // Create job object (optional: do something with it)
+    // Create job object
     const newJob = {
-      jobTitle,
-      hourlyPay,
-      isRemote,
-      startDate,
-      endDate,
-      description,
-      tags,
+      title: jobTitle,
+      pay: parseInt(hourlyPay),
+      remote: isRemote,
+      start: new Date(startDate),
+      end: new Date(endDate),
+      description: description,
+      jobtag: tags,
     };
 
-    console.log('New Job Created:', newJob);
-    
-    // Open the snackbar
-    setOpenSnackbar(true); 
+    // Prepare the token (assuming you have it stored in localStorage or a context)
+    const token = localStorage.getItem('authToken'); // Replace with your method of retrieving the token
+    try {
+        // Make the POST request to the API
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/jobs/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Pass the token in the Authorization heade
+          },
+          body: JSON.stringify(newJob),
+        });
+      
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            response.text().then(data => console.log(data))
+            throw new Error('Failed to create job');
+        }
 
-    // Clear all fields
-    setJobTitle('');
-    setHourlyPay('');
-    setIsRemote('No');
-    setStartDate(''); // Clear to empty
-    setEndDate(''); // Clear to empty
-    setDescription('');
-    setTags([]);
-  };
+        // Open the snackbar
+        setOpenSnackbar(true);
+
+        // Clear all fields
+        setJobTitle('');
+        setHourlyPay(0.0);
+        setIsRemote(false);
+        setStartDate('');
+        setEndDate('');
+        setDescription('');
+        setTags([]);
+    } catch (error) {
+        console.error('Error creating job:', error);
+        alert('There was an error creating the job. Please try again.'); // Handle the error accordingly
+    }
+};
+
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -65,6 +88,10 @@ const CompCreate = () => {
     } = event;
     setTags(typeof value === 'string' ? value.split(',') : value);
   };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/tags`).then(res => res.json()).then(data => setAvailableTags(data))
+  },[])
 
   return (
     <>
@@ -87,15 +114,15 @@ const CompCreate = () => {
               variant="outlined"
               type="number"
               value={hourlyPay}
-              onChange={(e) => setHourlyPay(e.target.value)}
+              onChange={(e) => setHourlyPay(Number(e.target.value))}
             />
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel>Remote</InputLabel>
               <Select
-                value={isRemote}
-                onChange={(e) => setIsRemote(e.target.value)}
+                value={isRemote ? 'Yes' : 'No'} 
+                onChange={(e) => setIsRemote(e.target.value === 'Yes')}
               >
                 <MenuItem value="Yes">Yes</MenuItem>
                 <MenuItem value="No">No</MenuItem>
@@ -142,9 +169,10 @@ const CompCreate = () => {
                 onChange={handleTagsChange}
                 renderValue={(selected) => selected.join(', ')}
               >
-                <MenuItem value="Part-time">Part-time</MenuItem>
-                <MenuItem value="Full-time">Full-time</MenuItem>
-                <MenuItem value="Contract">Contract</MenuItem>
+                {availableTags.map((tag,i) => <MenuItem key={i} value={tag.name}>
+                        <input type="checkbox" checked={tags.indexOf(tag.name) > -1} readOnly />
+                        {tag.name}
+                      </MenuItem>)}
                 {/* Add more tag options as needed */}
               </Select>
             </FormControl>
