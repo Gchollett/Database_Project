@@ -77,7 +77,7 @@ const jobSchema = z.object({
     start: z.string().datetime(),
     end: z.string().datetime(),
     description: z.string(),
-    tags: z.array(z.string())
+    jobtag: z.array(z.string())
 })
 
 /**
@@ -150,7 +150,7 @@ router.post('/create', authorize(["Companies"]), async (req,res) => {
         data:{
             ...jobData.data,
             compid: companyUser.compid,
-            jobtag: jobData.tags
+            jobtag: {connect: jobData.tags}
         }
     }).then(res.status(201).send("Job Created"))
 })
