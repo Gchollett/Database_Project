@@ -61,6 +61,33 @@ const ContSearch = () => {
     setFilteredJobs(filtered);
   }, [jobs, sortOption, remoteOption, searchQuery]);
 
+  const applyForJob = async (jobid) => {
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+  
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/applications/${jobid}/apply`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Application failed'); // Handle error appropriately
+      }
+  
+      const data = await response.json();
+      console.log('Application successful:', data); // Handle success (e.g., show a notification)
+  
+      // Optionally, you might want to display a success message or update the UI
+      alert('Application submitted successfully!');
+    } catch (error) {
+      alert(error.message); // Display error message
+    }
+  };
+  
+
   return (
     <>
       <h2>Job Search</h2>
@@ -131,7 +158,7 @@ const ContSearch = () => {
                 <Typography variant="body2">{job.description}</Typography>
               </Stack>
               <Stack spacing={1} alignItems="flex-end">
-                <Button variant="contained" color="primary">
+                <Button variant="contained" color="primary" onClick={() => applyForJob(job.jobid)}>
                   Apply
                 </Button>
               </Stack>
