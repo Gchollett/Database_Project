@@ -157,6 +157,7 @@ const CompCreate = () => {
               multiline
               rows={4}
               value={description}
+              inputProps={{ maxLength: 50 }}
               onChange={(e) => setDescription(e.target.value)}
             />
           </Grid>
@@ -173,7 +174,6 @@ const CompCreate = () => {
                         <input type="checkbox" checked={tags.indexOf(tag.name) > -1} readOnly />
                         {tag.name}
                       </MenuItem>)}
-                {/* Add more tag options as needed */}
               </Select>
             </FormControl>
           </Grid>
@@ -184,8 +184,6 @@ const CompCreate = () => {
           </Grid>
         </Grid>
       </Stack>
-
-      {/* Snackbar for success message */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
