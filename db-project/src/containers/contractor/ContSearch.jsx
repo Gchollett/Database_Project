@@ -9,57 +9,53 @@ const ContSearch = () => {
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
   useEffect(() => {
-    // Setting initial job data
-    setJobs([
-      {
-        jobId: '12345',
-        title: 'Web Developer',
-        company: 'Tech Hub',
-        isRemote: true,
-        startDate: '2023-11-01 09:00 AM',
-        endDate: '2024-05-01 05:00 PM',
-        pricePerHour: 50,
-        description: 'As a Web Developer, you will develop high-quality software solutions. You will collaborate with cross-functional teams to define and implement new features.',
-        tags: ['Part-time', 'Front-End'],  
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+
+    fetch(`${import.meta.env.VITE_API_URL}/jobs`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-      {
-        jobId: '67890',
-        title: 'Product Manager',
-        company: 'GNCM',
-        isRemote: false,
-        startDate: '2023-12-01 10:00 AM',
-        endDate: '2024-06-01 04:00 PM',
-        pricePerHour: 60,
-        description: 'The Product Manager will lead product strategy and execution. You will work closely with engineering, marketing, and sales to deliver innovative solutions.',
-        tags: ['Full-time', 'Management'],  
-      },
-    ]);
-  }, []);
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(data => {
+      setJobs(data); // Assuming data is an array of job objects
+      setFilteredJobs(data); // Initialize filteredJobs with the fetched jobs
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  }, []); // Run only once on component mount
 
   useEffect(() => {
     let filtered = [...jobs];
 
     // Filter based on remoteOption
     if (remoteOption === 'remote') {
-      filtered = filtered.filter((job) => job.isRemote);
+      filtered = filtered.filter((job) => job.remote);
     } else if (remoteOption === 'non-remote') {
-      filtered = filtered.filter((job) => !job.isRemote);
+      filtered = filtered.filter((job) => !job.remote);
     }
 
-    // Search by title, company, or tags
+    // Search by title
     const searchLower = searchQuery.toLowerCase();
     filtered = filtered.filter(
       (job) =>
         job.title.toLowerCase().includes(searchLower) ||
-        job.company.toLowerCase().includes(searchLower) ||
-        job.tags.some(tag => tag.toLowerCase().includes(searchLower))
+        job.description.toLowerCase().includes(searchLower) // Assuming filtering by description
     );
 
     // Sort by selected pay option
     if (sortOption === 'pay-asc') {
-      filtered.sort((a, b) => a.pricePerHour - b.pricePerHour);
+      filtered.sort((a, b) => a.pay - b.pay);
     } else if (sortOption === 'pay-desc') {
-      filtered.sort((a, b) => b.pricePerHour - a.pricePerHour);
+      filtered.sort((a, b) => b.pay - a.pay);
     }
 
     setFilteredJobs(filtered);
@@ -73,7 +69,7 @@ const ContSearch = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Search by Title, Company, or Tags"
+              label="Search by Title or Description"
               variant="outlined"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -109,7 +105,7 @@ const ContSearch = () => {
         </Grid>
         <hr />
         {filteredJobs.map((job) => (
-          <React.Fragment key={job.jobId}>
+          <React.Fragment key={job.jobid}>
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -119,48 +115,34 @@ const ContSearch = () => {
             >
               <Stack spacing={0.5} alignItems="flex-start">
                 <Typography variant="body1">{job.title}</Typography>
-                <Typography variant="body2">{job.company}</Typography>
-                <Typography variant="body2" color="textSecondary">Job ID: {job.jobId}</Typography>
+                <Typography variant="body2" color="textSecondary">Job ID: {job.jobid}</Typography>
                 <Typography variant="body2" color="textSecondary">
-                  {job.isRemote ? 'Remote: Yes' : 'Remote: No'}
+                  {job.remote ? 'Remote: Yes' : 'Remote: No'}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  Start Date: {job.startDate}
+                  Start Date: {new Date(job.start).toLocaleDateString()}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  End Date: {job.endDate}
+                  End Date: {new Date(job.end).toLocaleDateString()}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  Price per Hour: ${job.pricePerHour}
+                  Pay: ${job.pay}/hr
                 </Typography>
                 <Typography variant="body2">{job.description}</Typography>
-                <Stack direction="row" spacing={1} mt={1}>
-                  {job.tags.map((tag, index) => (
-                    <Chip key={index} label={tag} variant="outlined" />
-                  ))}
-                </Stack>
               </Stack>
               <Stack spacing={1} alignItems="flex-end">
-              {job == jobs[0] && 
-                <Tooltip title="This job is recommended to you in order to maximize profits based on your current accepted jobs" arrow>
-                  <Typography variant="subtitle2" color="primary">
-                    Top Pick For You
-                  </Typography>
-                </Tooltip>
-              }
-              <Button variant="contained" color="primary">
+                <Button variant="contained" color="primary">
                   Apply
-              </Button>
+                </Button>
               </Stack>
             </Stack>
-            <hr></hr>
+            <hr />
           </React.Fragment>
         ))}
       </Stack>
-      <br/><br/><br/><br/>
+      <br /><br /><br /><br />
     </>
   );
 };
 
 export default ContSearch;
-
