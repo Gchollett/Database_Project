@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, Chip, TextField, Tooltip } from '@mui/material';
+import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, TextField } from '@mui/material';
+import { fetchWithAuth } from '../../utils/api';
 
 const ContSearch = () => {
   const [jobs, setJobs] = useState([]);
@@ -9,17 +10,13 @@ const ContSearch = () => {
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken'); // Retrieve the token
 
-    fetch(`${import.meta.env.VITE_API_URL}/jobs`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+    fetchWithAuth(`${import.meta.env.VITE_API_URL}/jobs`, {
+      method: 'GET'
     })
     .then((res) => {
       if (!res.ok) {
+        res.text
         throw new Error('Network response was not ok');
       }
       return res.json();
@@ -62,22 +59,17 @@ const ContSearch = () => {
   }, [jobs, sortOption, remoteOption, searchQuery]);
 
   const applyForJob = async (jobid) => {
-    const token = localStorage.getItem('authToken'); // Retrieve the token
   
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/applications/${jobid}/apply`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+      const response = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/applications/${jobid}/apply`, {
+        method: 'POST'
       });
   
       if (!response.ok) {
         throw new Error('Application failed'); // Handle error appropriately
       }
   
-      const data = await response.json();
+      const data = await response.text();
       console.log('Application successful:', data); // Handle success (e.g., show a notification)
   
       // Optionally, you might want to display a success message or update the UI

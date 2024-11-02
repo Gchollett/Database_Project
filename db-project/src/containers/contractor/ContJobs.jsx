@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Stack, Typography, TextField, Paper, Grid,Chip } from '@mui/material';
 
 // Sample job data
