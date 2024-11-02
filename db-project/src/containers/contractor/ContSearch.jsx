@@ -134,6 +134,7 @@ const ContSearch = () => {
             >
               <Stack spacing={0.5} alignItems="flex-start">
                 <Typography variant="body1">{job.title}</Typography>
+                <Typography variant="body2">{job.company.name}</Typography>
                 <Typography variant="body2" color="textSecondary">Job ID: {job.jobid}</Typography>
                 <Typography variant="body2" color="textSecondary">
                   {job.remote ? 'Remote: Yes' : 'Remote: No'}
