@@ -53,7 +53,7 @@ const prisma = new PrismaClient();
 router.get('/',authorize(["Contractors","Companies"]), async function(req, res, next) {
     const user = res.locals.user
     if(user.compid){
-        res.status(200).send(await prisma.job.findMany({where:{compid: user.compid}}))
+        res.status(200).send(await prisma.job.findMany({where:{compid: user.compid},select:{jobid:true,title:true,pay:true,remote:true,start:true,end:true,description:true,jobtag:{select:{name:true}},company:{select:{name:true}}}}))
     }else if(user.contid){
         var query = {}
         if(["pay","title","start","end"].includes(req.query.sortby)){
@@ -62,7 +62,7 @@ router.get('/',authorize(["Contractors","Companies"]), async function(req, res, 
             query = {...query,orderBy:orderByObject}
         }
         if(req.query.filter) query = {...query,where:JSON.parse(req.query.filter)}
-        res.status(200).send(await prisma.job.findMany(query));
+        res.status(200).send(await prisma.job.findMany({...query,select:{jobid:true,title:true,pay:true,remote:true,start:true,end:true,description:true,jobtag:{select:{name:true}},company:{select:{name:true}}}}));
     }else{
         res.status(500).send("Authorization Error")
     }

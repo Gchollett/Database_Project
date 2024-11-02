@@ -300,7 +300,7 @@ router.put('/:jobid/:contid',authorize(["Companies"]),async (req,res) => {
 /**
  * @openapi
  * /applications/{jobid}/apply:
- *  get:
+ *  post:
  *      tags:
  *          - Application
  *      summary: "Create application for Authorized User for job with Id"
@@ -323,9 +323,11 @@ router.put('/:jobid/:contid',authorize(["Companies"]),async (req,res) => {
  *          400:
  *              description: "Bad Request"
  *          401:
- *              description: "Not Authorized"   
+ *              description: "Not Authorized"
+ *          404:
+ *              description: "Job Does not Exist"   
  */
-router.get('/:jobid/apply',authorize(["Contractors"]),async (req,res) => {
+router.post('/:jobid/apply',authorize(['Contractors']),async (req,res) => {
     const user = res.locals.user;
     const jobid = parseInt(req.params.jobid)
     if(await prisma.job.findUnique({where:{jobid}})){
@@ -341,7 +343,7 @@ router.get('/:jobid/apply',authorize(["Contractors"]),async (req,res) => {
         }catch(e){
             res.status(400).send("Already Applied for this Job")
         }
-    }else res.status(400).send("Job Does not Exist")
+    }else res.status(404).send("Job Does not Exist")
 })
 
 /**

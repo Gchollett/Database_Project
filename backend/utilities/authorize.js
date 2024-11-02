@@ -8,13 +8,15 @@ const authorize = (allowedUsers) => {
     const middleware = async (req,res,next) => {
         const header = req.header('Authorization');
         if(!header){
-            res.status("401").send("Not Authorized")
+            res.status(401).send("Not Authorized")
+            console.log('No header')
             return;
         }
         const [_,token] = header.split(' ');
         const username = parse(token)
         if(username == ""){
             res.status(401).send("Not Authorized")
+            console.log("improper username")
             return;
         }
         var user = null;
@@ -25,6 +27,7 @@ const authorize = (allowedUsers) => {
             user = await prisma.company.findFirst({where:{username:username}})
         }
         if(!user){
+            console.log("no user in system")
             res.status(401).send("Not Authorized")
             return;
         }
