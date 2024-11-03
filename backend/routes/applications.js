@@ -57,6 +57,7 @@ router.get('/',authorize(["Contractors","Companies"]), async (req,res) => {
                     select:{
                         contractor:{
                             select:{
+                                contid: true,
                                 firstname:true,
                                 lastname:true,
                                 rate: true,
