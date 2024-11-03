@@ -41,12 +41,18 @@ router.get('/',authorize(["Contractors","Companies"]), async (req,res) => {
                 compid: parseInt(user.compid)
             },
             select:{
+                jobid: true,
                 title: true,
                 remote: true,
                 pay: true,
                 start:true,
                 end:true,
                 description:true,
+                jobtag:{
+                    select:{
+                        name:true,
+                    }
+                },
                 jobapplication:{
                     select:{
                         contractor:{
@@ -69,12 +75,18 @@ router.get('/',authorize(["Contractors","Companies"]), async (req,res) => {
             select:{
                 job:{
                     select:{
+                        jobid:true,
                         title:true,
                         remote:true,
                         pay:true,
                         start:true,
                         end:true,
                         description:true,
+                        jobtag:{
+                            select:{
+                                name:true,
+                            }
+                        },
                         company:{
                             select: {
                                 name:true
