@@ -23,15 +23,91 @@ const CompApplications = () => {
         console.error('There was a problem with the fetch operation:', error);
       });
   }, []);
-
+  //TODO
   const handleApply = (index, jobTitle) => {
-    // Logic to handle application acceptance
     console.log(`Applying for job: ${jobTitle} at index: ${index}`);
+    /*const jobId = filteredJobs[index].jobid; // Get the job ID from the filtered jobs
+    const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+
+    // Create the URL for the PUT request
+    const url = `${import.meta.env.VITE_API_URL}/applications/${jobId}/${contractorId}`;
+
+    // Set up the request options
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: "Accepted" }), // Sending status as the request body
+    };
+
+    // Make the PUT request
+    fetch(url, options)
+        .then((res) => {
+            if (res.ok) {
+                return res.json(); // Successful response
+            } else if (res.status === 400) {
+                throw new Error('Application does not exist.');
+            } else if (res.status === 410) {
+                throw new Error('Not authorized.');
+            } else {
+                throw new Error('An unexpected error occurred.');
+            }
+        })
+        .then(data => {
+            console.log(`Successfully applied for job: ${jobTitle}`, data);
+            // Update state or UI as necessary
+        })
+        .catch(error => {
+            console.error('Error applying for the job:', error.message);
+            // Optionally, show an error message to the user
+        });*/
   };
 
+  //TODO
   const handleReject = (index, jobTitle) => {
-    // Logic to handle application rejection
     console.log(`Rejecting application for job: ${jobTitle} at index: ${index}`);
+    /*const jobId = filteredJobs[index].jobid; // Get the job ID from the filtered jobs
+    const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+
+    // Create the URL for the PUT request
+    const url = `${import.meta.env.VITE_API_URL}/applications/${jobId}/${contractorId}`;
+
+    // Set up the request options
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: "Rejected" }), // Sending status as the request body
+    };
+
+    // Make the PUT request
+    fetch(url, options)
+        .then((res) => {
+            if (res.ok) {
+                return res.json(); // Successful response
+            } else if (res.status === 400) {
+                throw new Error('Application does not exist.');
+            } else if (res.status === 410) {
+                throw new Error('Not authorized.');
+            } else {
+                throw new Error('An unexpected error occurred.');
+            }
+        })
+        .then(data => {
+            console.log(`Successfully applied for job: ${jobTitle}`, data);
+            // Update state or UI as necessary
+        })
+        .catch(error => {
+            console.error('Error applying for the job:', error.message);
+            // Optionally, show an error message to the user
+        });*/
+  
   };
 
   return (
