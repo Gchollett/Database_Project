@@ -24,9 +24,9 @@ const CompApplications = () => {
       });
   }, []);
   //TODO
-  const handleApply = (index, jobTitle) => {
+  const handleAccept = (index, jobTitle) => {
     console.log(`Applying for job: ${jobTitle} at index: ${index}`);
-    /*const jobId = filteredJobs[index].jobid; // Get the job ID from the filtered jobs
+    /*const jobId = jobs[index].jobid; // Get the job ID from the filtered jobs
     const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
     const token = localStorage.getItem('authToken'); // Retrieve the token
 
@@ -69,7 +69,7 @@ const CompApplications = () => {
   //TODO
   const handleReject = (index, jobTitle) => {
     console.log(`Rejecting application for job: ${jobTitle} at index: ${index}`);
-    /*const jobId = filteredJobs[index].jobid; // Get the job ID from the filtered jobs
+    /*const jobId = jobs[index].jobid; // Get the job ID from the filtered jobs
     const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
     const token = localStorage.getItem('authToken'); // Retrieve the token
 
@@ -119,9 +119,14 @@ const CompApplications = () => {
 
           return (
             <Accordion key={job.title}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                  <Typography variant="h6">{job.title}</Typography>
+                  <Stack spacing={1} alignItems="flex-start">
+                    <Typography variant="h6">{job.title}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Job ID: {job.jobid}
+                    </Typography>
+                  </Stack>
                   <Typography variant="body2" color="textSecondary">
                     {applicationCount} Application{applicationCount !== 1 ? 's' : ''}
                   </Typography>
@@ -146,9 +151,9 @@ const CompApplications = () => {
                           <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => handleApply(appIndex, job.title)}
+                            onClick={() => handleAccept(appIndex, job.title)}
                           >
-                            Apply
+                            Accept
                           </Button>
                           <Button
                             variant="contained"
@@ -167,6 +172,7 @@ const CompApplications = () => {
           );
         })}
       </Stack>
+      <br></br><br></br><br></br><br></br>
     </>
   );
 };
