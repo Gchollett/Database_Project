@@ -1,176 +1,162 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Typography, Button, Paper, Chip, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Stack, Typography, Button, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { fetchWithAuth } from '../../utils/api';
 
 const CompApplications = () => {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    setJobs([
-      {
-        title: 'Software Engineer',
-        status: 'Pending',
-        jobId: '12345',
-        applicationDate: '2023-10-15',
-        employee: {
-          userID: 'U123456',
-          firstName: 'Mary',
-          lastName: 'Phillips',
-          username: 'mphillip',
-          email: 'mphillip@trinity.edu',
-          rate: 30,
-          resume: 'Experienced software engineer with a passion for developing innovative programs. Skilled in JavaScript, React, and Node.js.',
-          tags: ['JavaScript', 'React', 'Node.js'], // Added tags
-        },
-      },
-      {
-        title: 'Software Engineer',
-        status: 'Pending',
-        jobId: '12345',
-        applicationDate: '2023-10-16',
-        employee: {
-          userID: 'U654322',
-          firstName: 'Steve',
-          lastName: 'Rogers',
-          username: 'srogers',
-          email: 'srogers@trinity.edu',
-          rate: 35,
-          resume: 'Software engineer with expertise in C++ and distributed systems.',
-          tags: ['C++', 'Distributed Systems'], // Added tags
-        },
-      },
-      {
-        title: 'Product Manager',
-        status: 'Pending',
-        jobId: '54321',
-        applicationDate: '2023-10-20',
-        employee: {
-          userID: 'U654321',
-          firstName: 'John',
-          lastName: 'Doe',
-          username: 'johndoe',
-          email: 'johndoe@example.com',
-          rate: 40,
-          resume: 'Product Manager with over 5 years of experience in leading cross-functional teams to deliver high-quality products.',
-          tags: ['Agile', 'Leadership', 'Product Development'], // Added tags
-        },
-      },
-    ]);
+    fetchWithAuth(`${import.meta.env.VITE_API_URL}/applications`, {
+      method: 'GET',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setJobs(data); // Assuming data is the array of jobs
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   }, []);
+  //TODO
+  const handleApply = (index, jobTitle) => {
+    console.log(`Applying for job: ${jobTitle} at index: ${index}`);
+    /*const jobId = filteredJobs[index].jobid; // Get the job ID from the filtered jobs
+    const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
+    const token = localStorage.getItem('authToken'); // Retrieve the token
 
-  // Group applications by jobId
-  const groupedJobs = jobs.reduce((acc, job) => {
-    if (!acc[job.jobId]) {
-      acc[job.jobId] = {
-        title: job.title,
-        jobId: job.jobId,
-        applications: [],
-      };
-    }
-    acc[job.jobId].applications.push(job);
-    return acc;
-  }, {});
+    // Create the URL for the PUT request
+    const url = `${import.meta.env.VITE_API_URL}/applications/${jobId}/${contractorId}`;
 
-  const handleAccept = (index, jobId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job, i) =>
-        job.jobId === jobId && i === index ? { ...job, status: 'Accepted' } : job
-      )
-    );
+    // Set up the request options
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: "Accepted" }), // Sending status as the request body
+    };
+
+    // Make the PUT request
+    fetch(url, options)
+        .then((res) => {
+            if (res.ok) {
+                return res.json(); // Successful response
+            } else if (res.status === 400) {
+                throw new Error('Application does not exist.');
+            } else if (res.status === 410) {
+                throw new Error('Not authorized.');
+            } else {
+                throw new Error('An unexpected error occurred.');
+            }
+        })
+        .then(data => {
+            console.log(`Successfully applied for job: ${jobTitle}`, data);
+            // Update state or UI as necessary
+        })
+        .catch(error => {
+            console.error('Error applying for the job:', error.message);
+            // Optionally, show an error message to the user
+        });*/
   };
 
-  const handleReject = (index, jobId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job, i) =>
-        job.jobId === jobId && i === index ? { ...job, status: 'Rejected' } : job
-      )
-    );
+  //TODO
+  const handleReject = (index, jobTitle) => {
+    console.log(`Rejecting application for job: ${jobTitle} at index: ${index}`);
+    /*const jobId = filteredJobs[index].jobid; // Get the job ID from the filtered jobs
+    const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+
+    // Create the URL for the PUT request
+    const url = `${import.meta.env.VITE_API_URL}/applications/${jobId}/${contractorId}`;
+
+    // Set up the request options
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: "Rejected" }), // Sending status as the request body
+    };
+
+    // Make the PUT request
+    fetch(url, options)
+        .then((res) => {
+            if (res.ok) {
+                return res.json(); // Successful response
+            } else if (res.status === 400) {
+                throw new Error('Application does not exist.');
+            } else if (res.status === 410) {
+                throw new Error('Not authorized.');
+            } else {
+                throw new Error('An unexpected error occurred.');
+            }
+        })
+        .then(data => {
+            console.log(`Successfully applied for job: ${jobTitle}`, data);
+            // Update state or UI as necessary
+        })
+        .catch(error => {
+            console.error('Error applying for the job:', error.message);
+            // Optionally, show an error message to the user
+        });*/
+  
   };
 
   return (
     <>
-      <h2>Applications</h2>
+      <h2>Job Applications</h2>
       <Stack spacing={4}>
-        {Object.keys(groupedJobs).map((jobId) => {
-          const jobGroup = groupedJobs[jobId];
-          const applicationCount = jobGroup.applications.length; // Get the count of applications
+        {jobs.map((job, index) => {
+          const applicationCount = job.jobapplication.length;
 
           return (
-            <Accordion key={jobId}>
+            <Accordion key={job.title}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                  <Typography variant="h6">{jobGroup.title}</Typography>
-                  <Typography variant="subtitle1" sx={{ marginLeft: 2 }}>
-                    Job ID: {jobId}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ marginLeft: 'auto' }}>
-                    {applicationCount} Application{applicationCount > 1 ? 's' : ''}
+                  <Typography variant="h6">{job.title}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {applicationCount} Application{applicationCount !== 1 ? 's' : ''}
                   </Typography>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>
                 <Stack spacing={4}>
-                  {jobGroup.applications.map((job, index) => (
-                    <Paper key={index} sx={{ padding: 2 }}>
+                  {job.jobapplication.map((application, appIndex) => (
+                    <Paper key={appIndex} sx={{ padding: 2 }}>
                       <Stack spacing={2}>
-                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                          <Stack spacing={0.5} alignItems="flex-start">
-                            <Typography variant="subtitle1" color="textSecondary">
-                              Application Date: {job.applicationDate}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Status: {job.status}
-                            </Typography>
-                          </Stack>
-                        </Stack>
-
-                        {job.status === 'Pending' && (
-                          <Stack direction="row" spacing={2}>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => handleAccept(index, jobId)}
-                            >
-                              Accept
-                            </Button>
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              onClick={() => handleReject(index, jobId)}
-                            >
-                              Reject
-                            </Button>
-                          </Stack>
-                        )}
-
-                        {/* Display contractor information */}
-                        <Stack spacing={1} sx={{ marginTop: 2 }}>
-                          <Typography variant="h6">Applicant Information:</Typography>
-                          <Typography variant="body2">
-                            <strong>Name:</strong> {job.employee.firstName} {job.employee.lastName}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Username:</strong> {job.employee.username}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Email:</strong> {job.employee.email}
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Rate:</strong> ${job.employee.rate}/hr
-                          </Typography>
-                          <Typography variant="body2">
-                            <strong>Resume:</strong> {job.employee.resume}
-                          </Typography>
-
-                          {/* Display tags */}
-                          <Typography variant="body2">
-                            <strong>Applicant Tags:</strong>
-                          </Typography>
-                          <Stack direction="row" spacing={1} mt={1}>
-                            {job.employee.tags.map((tag, index) => (
-                              <Chip key={index} label={tag} variant="outlined" />
-                            ))}
-                          </Stack>
+                        <Typography variant="h6">Applicant Information:</Typography>
+                        <Typography variant="body2">
+                          <strong>Name:</strong> {application.contractor.firstname} {application.contractor.lastname}
+                        </Typography>
+                        <Typography variant="body2">
+                          <strong>Rate:</strong> ${application.contractor.rate}/hr
+                        </Typography>
+                        <Typography variant="body2">
+                          <strong>Resume:</strong> {application.contractor.resume}
+                        </Typography>
+                        <Stack direction="row" spacing={2}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleApply(appIndex, job.title)}
+                          >
+                            Apply
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleReject(appIndex, job.title)}
+                          >
+                            Reject
+                          </Button>
                         </Stack>
                       </Stack>
                     </Paper>
@@ -181,7 +167,6 @@ const CompApplications = () => {
           );
         })}
       </Stack>
-      <br></br><br></br><br></br><br></br>
     </>
   );
 };
