@@ -14,7 +14,7 @@ import {
 
 const CompCreate = () => {
   const [jobTitle, setJobTitle] = useState('');
-  const [hourlyPay, setHourlyPay] = useState(0.0);
+  const [hourlyPay, setHourlyPay] = useState(0);
   const [isRemote, setIsRemote] = useState(false);
   const [startDate, setStartDate] = useState(''); // Start with empty
   const [endDate, setEndDate] = useState(''); // Start with empty
@@ -65,7 +65,7 @@ const CompCreate = () => {
 
         // Clear all fields
         setJobTitle('');
-        setHourlyPay(0.0);
+        setHourlyPay(0);
         setIsRemote(false);
         setStartDate('');
         setEndDate('');
@@ -112,7 +112,6 @@ const CompCreate = () => {
               fullWidth
               label="Hourly Pay"
               variant="outlined"
-              type="number"
               value={hourlyPay}
               onChange={(e) => setHourlyPay(Number(e.target.value))}
             />
