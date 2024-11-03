@@ -24,10 +24,7 @@ const CompApplications = () => {
       });
   }, []);
   //TODO
-  const handleAccept = (index, jobTitle) => {
-    console.log(`Applying for job: ${jobTitle} at index: ${index}`);
-    /*const jobId = jobs[index].jobid; // Get the job ID from the filtered jobs
-    const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
+  const handleAccept = (jobId,contractorId) => {
     const token = localStorage.getItem('authToken'); // Retrieve the token
 
     // Create the URL for the PUT request
@@ -40,7 +37,7 @@ const CompApplications = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: "Accepted" }), // Sending status as the request body
+        body: JSON.stringify("Accepted"), // Sending status as the request body
     };
 
     // Make the PUT request
@@ -57,20 +54,15 @@ const CompApplications = () => {
             }
         })
         .then(data => {
-            console.log(`Successfully applied for job: ${jobTitle}`, data);
-            // Update state or UI as necessary
+            console.log('Successfully accepted.');
         })
         .catch(error => {
-            console.error('Error applying for the job:', error.message);
-            // Optionally, show an error message to the user
-        });*/
+            console.error('Error accepting.');
+        });
   };
 
   //TODO
-  const handleReject = (index, jobTitle) => {
-    console.log(`Rejecting application for job: ${jobTitle} at index: ${index}`);
-    /*const jobId = jobs[index].jobid; // Get the job ID from the filtered jobs
-    const contractorId = 'some_contractor_id'; // Replace with actual contractor ID
+  const handleReject = (jobId,contractorId) => {
     const token = localStorage.getItem('authToken'); // Retrieve the token
 
     // Create the URL for the PUT request
@@ -83,7 +75,7 @@ const CompApplications = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: "Rejected" }), // Sending status as the request body
+        body: JSON.stringify("Rejected"), // Sending status as the request body
     };
 
     // Make the PUT request
@@ -100,13 +92,11 @@ const CompApplications = () => {
             }
         })
         .then(data => {
-            console.log(`Successfully applied for job: ${jobTitle}`, data);
-            // Update state or UI as necessary
+            console.log('Successfully rejected');
         })
         .catch(error => {
-            console.error('Error applying for the job:', error.message);
-            // Optionally, show an error message to the user
-        });*/
+            console.error('Error rejecting.');
+        });
   
   };
 
@@ -151,14 +141,14 @@ const CompApplications = () => {
                           <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => handleAccept(appIndex, job.title)}
+                            onClick={() => handleAccept(job.jobid, application.contractor.contid)}
                           >
                             Accept
                           </Button>
                           <Button
                             variant="contained"
                             color="secondary"
-                            onClick={() => handleReject(appIndex, job.title)}
+                            onClick={() => handleReject(job.jobid, application.contractor.contid)}
                           >
                             Reject
                           </Button>
