@@ -55,6 +55,7 @@ router.get('/',authorize(["Contractors","Companies"]), async (req,res) => {
                 },
                 jobapplication:{
                     select:{
+                        status: true,
                         contractor:{
                             select:{
                                 contid: true,
@@ -154,6 +155,7 @@ router.get('/:jobid',authorize(["Companies"]),async (req,res) => {
             description:true,
             jobapplication:{
                 select:{
+                    status: true,
                     contractor:{
                         select:{
                             firstname:true,
@@ -271,10 +273,6 @@ const applicationStatusSchema = z.object({
  *      responses:
  *          200:
  *              description: "Application Successfuly Found."
- *              content:
- *                  application/json:
- *                      schema:
- *                          $ref: "#/components/schemas/application_jobid_contid"
  *          400:
  *              description: "Application Does Not Exist."
  *          401:
@@ -303,9 +301,7 @@ router.put('/:jobid/:contid',authorize(["Companies"]),async (req,res) => {
                     jobid: parseInt(req.params.jobid)
                 }
             },
-            data:{
-                status: status.data
-            }
+            data:status.data
         }).then(res.status(200).send("Application Updated"))
     }else res.status(400).send("Applicaiton Does Not Exist")
 })

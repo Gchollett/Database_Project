@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack, Typography, Button, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { fetchWithAuth } from '../../utils/api';
@@ -6,7 +6,7 @@ import { fetchWithAuth } from '../../utils/api';
 const CompApplications = () => {
   const [jobs, setJobs] = useState([]);
 
-  useEffect(() => {
+  const fixJobs = () => {
     fetchWithAuth(`${import.meta.env.VITE_API_URL}/applications`, {
       method: 'GET',
     })
@@ -22,29 +22,24 @@ const CompApplications = () => {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
+  }
+
+  useEffect(() => {
+    fixJobs();
   }, []);
   //TODO
   const handleAccept = (jobId,contractorId) => {
-    const token = localStorage.getItem('authToken'); // Retrieve the token
 
     // Create the URL for the PUT request
     const url = `${import.meta.env.VITE_API_URL}/applications/${jobId}/${contractorId}`;
 
-    // Set up the request options
-    const options = {
-        method: 'PUT',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify("Accepted"), // Sending status as the request body
-    };
-
     // Make the PUT request
-    fetch(url, options)
-        .then((res) => {
+    fetchWithAuth(url, {
+      method: 'PUT',
+      body: JSON.stringify({status:"Accepted"}), // Sending status as the request body
+    }).then((res) => {
             if (res.ok) {
-                return res.json(); // Successful response
+              fixJobs()
             } else if (res.status === 400) {
                 throw new Error('Application does not exist.');
             } else if (res.status === 410) {
@@ -52,37 +47,23 @@ const CompApplications = () => {
             } else {
                 throw new Error('An unexpected error occurred.');
             }
-        })
-        .then(data => {
-            console.log('Successfully accepted.');
-        })
-        .catch(error => {
-            console.error('Error accepting.');
-        });
+    })
   };
 
   //TODO
   const handleReject = (jobId,contractorId) => {
-    const token = localStorage.getItem('authToken'); // Retrieve the token
 
     // Create the URL for the PUT request
     const url = `${import.meta.env.VITE_API_URL}/applications/${jobId}/${contractorId}`;
 
-    // Set up the request options
-    const options = {
-        method: 'PUT',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify("Rejected"), // Sending status as the request body
-    };
 
     // Make the PUT request
-    fetch(url, options)
-        .then((res) => {
+    fetchWithAuth(url, {
+      method: 'PUT',
+      body: JSON.stringify({status:"Rejected"}), // Sending status as the request body
+    }).then((res) => {
             if (res.ok) {
-                return res.json(); // Successful response
+              fixJobs();
             } else if (res.status === 400) {
                 throw new Error('Application does not exist.');
             } else if (res.status === 410) {
@@ -91,24 +72,17 @@ const CompApplications = () => {
                 throw new Error('An unexpected error occurred.');
             }
         })
-        .then(data => {
-            console.log('Successfully rejected');
-        })
-        .catch(error => {
-            console.error('Error rejecting.');
-        });
-  
   };
 
   return (
     <>
       <h2>Job Applications</h2>
       <Stack spacing={4}>
-        {jobs.map((job, index) => {
+        {jobs.map((job,index) => {
           const applicationCount = job.jobapplication.length;
 
           return (
-            <Accordion key={job.title}>
+            <Accordion key={index}>
              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
                   <Stack spacing={1} alignItems="flex-start">
@@ -152,6 +126,9 @@ const CompApplications = () => {
                           >
                             Reject
                           </Button>
+                          <Typography variant="body1">
+                            <strong>Status:</strong> {application.status}
+                          </Typography>
                         </Stack>
                       </Stack>
                     </Paper>
