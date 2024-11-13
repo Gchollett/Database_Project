@@ -287,6 +287,11 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
             end:{
 
             }
+        },
+        orderBy:{
+            pay:{
+                
+            }
         }
     })
 })
