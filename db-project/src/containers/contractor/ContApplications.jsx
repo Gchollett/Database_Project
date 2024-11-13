@@ -45,6 +45,9 @@ const ContApplications = () => {
             <Typography variant="body2" color="textSecondary">
               {app.job.company.name}
             </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Job ID: {app.job.jobid}
+            </Typography>
           </Stack>
           <Stack spacing={0.5} alignItems="flex-end">
             <Typography variant="body2" color="textSecondary">
