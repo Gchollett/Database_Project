@@ -33,12 +33,11 @@ const CompJobs = () => {
   useEffect(() => {
     const searchLower = searchQuery.toLowerCase();
 
-    // Filter jobs by title or company, and sort them by start date
+    // Filter jobs by title or tags, and sort them by start date
     const filtered = jobs
       .filter((job) =>
-        job.title.toLowerCase().includes(searchLower)
-        //job.company.toLowerCase().includes(searchLower) // Uncomment this if you want to filter by company
-        // job.tags.some(tag => tag.toLowerCase().includes(searchLower)) // Uncomment if you want to filter by tags
+        job.title.toLowerCase().includes(searchLower) ||
+        job.jobtag.some(tag => tag.name.toLowerCase().includes(searchLower)) 
       )
       .sort((a, b) => new Date(a.startDate) - new Date(b.startDate)); // Sort by start date
 
@@ -51,7 +50,7 @@ const CompJobs = () => {
       <Stack spacing={3}>
         <TextField
           fullWidth
-          label="Search by Title, Company, or Tags"
+          label="Search by Title or Tags"
           variant="outlined"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -78,11 +77,11 @@ const CompJobs = () => {
                     Pay: ${job.pay}/hr
                   </Typography>
                   <Typography variant="body2">{job.description}</Typography>
-                    {/*<Stack direction="row" spacing={1} mt={1}>
-                    {job.tags.map((tag, index) => (
-                      <Chip key={index} label={tag} variant="outlined" />
-                    ))}
-                  </Stack>*/}
+                  <Stack direction="row" spacing={1} mt={1}>
+                  {job.jobtag.map((tag, index) => (
+                    <Chip key={index} label={tag.name} variant="outlined" />
+                  ))}
+                </Stack>
                   {job.contractor ? (
                     <Stack spacing={1} mt={2} sx={{ backgroundColor: '#f9f9f9', padding: 1, borderRadius: 1 }}>
                       <Typography variant="subtitle2" color="textPrimary">
