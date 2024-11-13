@@ -103,6 +103,64 @@ router.get('/',authorize(["Contractors","Companies"]), async (req,res) => {
         res.status(500).send("Authorization Error")
     }
 })
+
+/**
+ * @openapi
+ * /applications/accepted:
+ *  get:
+ *      tags:
+ *          - Application
+ *      summary: "Gets the applications for Contractor Users that they have filed and gets the applications for Company Users for all jobs they have posted."
+ *      parameters:
+ *          - in: header
+ *            name: token
+ *            schema:
+ *              type: string
+ *            description: "Authentification Token"
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: "The accepted applications were successfully found."
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: "#/components/schemas/applications"
+ *          401:
+ *              description: "Not Authorized"
+ */
+router.get('/accepted',authorize(['Contractors']),async (req,res) =>{
+    const user = res.locals.user;
+    prisma.jobapplication.findMany({
+        where:{
+            contid: user.contid
+        },
+        select:{
+            job:{
+                select:{
+                    jobid:true,
+                    title:true,
+                    remote:true,
+                    pay:true,
+                    start:true,
+                    end:true,
+                    description:true,
+                    jobtag:{
+                        select:{
+                            name:true,
+                        }
+                    },
+                    company:{
+                        select: {
+                            name:true
+                        }
+                    }
+                }
+            },
+            status:true
+        }
+    }).then(result => res.status(200).send(result))
+})
+
 /**
  * @openapi
  * /applications/{jobid}:
