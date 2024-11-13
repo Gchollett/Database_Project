@@ -62,7 +62,40 @@ router.get('/',authorize(["Contractors","Companies"]), async function(req, res, 
             query = {...query,orderBy:orderByObject}
         }
         if(req.query.filter) query = {...query,where:JSON.parse(req.query.filter)}
-        res.status(200).send(await prisma.job.findMany({...query,select:{jobid:true,title:true,pay:true,remote:true,start:true,end:true,description:true,jobtag:{select:{name:true}},company:{select:{name:true}}}}));
+        res.status(200).send(await prisma.job.findMany({...query,select:{
+            jobid:true,
+            title:true,
+            pay:true,
+            remote:true,
+            start:true,
+            end:true,
+            description:true,
+            jobtag:{
+                select:{name:true}
+            },
+            company:{
+                select:{name:true}
+            },
+            jobapplication:{
+                where:{
+                    status: "Accepted"
+                },
+                select:{
+                    contractor: {
+                        select:{
+                            firstname:true,
+                            lastname:true,
+                            User:{
+                                select:{
+                                    username:true,
+                                    email:true,
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }}));
     }else{
         res.status(500).send("Authorization Error")
     }
@@ -234,6 +267,28 @@ router.get('/:jobid',authorize(["Companies","Contractors"]),async (req,res) => {
         if(res.locals.compid && res.locals.compid != job.compid) res.status(400).send("Not One of Your Jobs")
         res.status(200).send(job)
     }
+})
+
+router.get('/recommended',authorize(['Contractors']),async (req,res) => {
+    const user = res.locals.user;
+    prisma.job.findMany({
+        where:{
+            jobid:{
+                notIn: prisma.jobapplication.findMany({where:{contid:user.contid}})
+            },
+            jobtag:{
+                some: {
+                    in: prisma.contractortag.findMany({where:{contid:user.contid}})
+                }
+            },
+            start:{
+
+            },
+            end:{
+
+            }
+        }
+    })
 })
 
 module.exports = router;
