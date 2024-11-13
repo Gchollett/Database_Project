@@ -132,7 +132,8 @@ router.get('/accepted',authorize(['Contractors']),async (req,res) =>{
     const user = res.locals.user;
     prisma.jobapplication.findMany({
         where:{
-            contid: user.contid
+            contid: user.contid,
+            status: "Accepted"
         },
         select:{
             job:{
