@@ -304,17 +304,62 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                     in: prisma.contractortag.findMany({where:{contid:user.contid}})
                 }
             },
-            AND:{
-                AND:{
-
+            AND:[
+                {
+                    OR:[
+                        {
+                            end:{
+                                lte:{
+                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{start:true}}})
+                                }
+                            }
+                        },
+                        {
+                            end:{
+                                gte:{
+                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{end:true}}})
+                                }
+                            }
+                        }
+                    ]
                 },
-                start:{
-                    
+                {
+                    OR:[
+                        {
+                            start:{
+                                gte:{
+                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{end:true}}})
+                                }
+                            }
+                        },
+                        {
+                            start:{
+                                lte:{
+                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{start:true}}})
+                                }
+                            }
+                        }
+                    ]
                 },
-                end:{
-
-                }
-            }
+                {
+                    OR:[
+                        {
+                            start:{
+                                lte:{
+                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{start:true}}})
+                                }
+                            }
+                        },
+                        {
+                            end:{
+                                gte:{
+                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{end:true}}})
+                                }
+                            }
+                        }
+                    ]
+                },
+            ]
             
         }
     })
