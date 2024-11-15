@@ -253,7 +253,7 @@ router.delete('/:jobid/delete',authorize(["Companies"]),async (req,res) => {
 
 /**
  * @openapi
- * /jobs/{jobid}:
+ * /jobs/job/{jobid}:
  *  get:
  *      tags:
  *          - Job
@@ -282,7 +282,7 @@ router.delete('/:jobid/delete',authorize(["Companies"]),async (req,res) => {
  *          401:
  *              description: "Not Authorized"
  */
-router.get('/:jobid',authorize(["Companies","Contractors"]),async (req,res) => {
+router.get('/job/:jobid',authorize(["Companies","Contractors"]),async (req,res) => {
     const job = await prisma.job.findUnique({where:{jobid:parseInt(req.params.jobid)}})
     if(!job){
         res.status(400).send("Job Does not Exist")
