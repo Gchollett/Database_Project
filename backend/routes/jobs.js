@@ -294,14 +294,20 @@ router.get('/job/:jobid',authorize(["Companies","Contractors"]),async (req,res) 
 
 router.get('/recommended',authorize(['Contractors']),async (req,res) => {
     const user = res.locals.user;
+    const appliedJobs = await prisma.jobapplication.findMany({where:{contid:user.contid},select:{jobid:true}}).then(res => res.map(x => x.jobid));
+    const userTags = await prisma.contractortag.findMany({where:{contid:user.contid}}).then(res => res.map(x => x.name))
+    const acceptedStartDatas = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{start:true}}}}).then(res => res.map(x => x.job.start));
+    const acceptedEndDates = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{end:true}}}}).then(res => res.map(x => x.job.end))
     const jobs = await prisma.job.findMany({
         where:{
             jobid:{
-                notIn: prisma.jobapplication.findMany({where:{contid:user.contid},select:{jobid:true}})
+                notIn: appliedJobs
             },
             jobtag:{
                 some: {
-                    in: prisma.contractortag.findMany({where:{contid:user.contid}})
+                    name:{
+                        in: userTags
+                    }
                 }
             },
             AND:[
@@ -310,14 +316,14 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                         {
                             end:{
                                 lte:{
-                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{start:true}}})
+                                    all: acceptedStartDatas
                                 }
                             }
                         },
                         {
                             end:{
                                 gte:{
-                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{end:true}}})
+                                    all: acceptedEndDates
                                 }
                             }
                         }
@@ -328,14 +334,14 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                         {
                             start:{
                                 gte:{
-                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{end:true}}})
+                                    all: acceptedEndDates
                                 }
                             }
                         },
                         {
                             start:{
                                 lte:{
-                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{start:true}}})
+                                    all: acceptedStartDatas
                                 }
                             }
                         }
@@ -346,21 +352,39 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                         {
                             start:{
                                 lte:{
-                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{start:true}}})
+                                    all: acceptedStartDatas
                                 }
                             }
                         },
                         {
                             end:{
                                 gte:{
-                                    all: prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{end:true}}})
+                                    all: acceptedEndDates
                                 }
                             }
                         }
                     ]
                 },
             ]
-            
+        },
+        select:{
+            jobid:true,
+                    title:true,
+            pay:true,
+            remote:true,
+            start:true,
+            end:true,
+            description:true,
+            jobtag:{
+                select:{
+                    name:true
+                }
+            },
+            company:{
+                select:{
+                    name:true
+                }
+            }
         }
     })
     res.status(200).send(jobs.sort((a,b) => a.pay*(a.start-a.end) - b.pay*(b.start-b.end)))
