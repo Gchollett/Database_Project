@@ -271,10 +271,10 @@ router.get('/:jobid',authorize(["Companies","Contractors"]),async (req,res) => {
 
 router.get('/recommended',authorize(['Contractors']),async (req,res) => {
     const user = res.locals.user;
-    prisma.job.findMany({
+    const jobs = await prisma.job.findMany({
         where:{
             jobid:{
-                notIn: prisma.jobapplication.findMany({where:{contid:user.contid}})
+                notIn: prisma.jobapplication.findMany({where:{contid:user.contid},select:{jobid:true}})
             },
             jobtag:{
                 some: {
@@ -282,18 +282,14 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                 }
             },
             start:{
-
+                
             },
             end:{
 
             }
-        },
-        orderBy:{
-            pay:{
-                
-            }
         }
     })
+    res.status(200).send(jobs.sort((a,b) => a.pay*(a.start-a.end) - b.pay*(b.start-b.end)))
 })
 
 module.exports = router;
