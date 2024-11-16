@@ -1,6 +1,6 @@
 var express = require('express');
 const { PrismaClient } = require('@prisma/client');
-const {z} = require('zod')
+const {z, object} = require('zod')
 const authorize = require('../utilities/authorize');
 // const 
 var router = express.Router();
@@ -296,7 +296,7 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
     const user = res.locals.user;
     const appliedJobs = await prisma.jobapplication.findMany({where:{contid:user.contid},select:{jobid:true}}).then(res => res.map(x => x.jobid));
     const userTags = await prisma.contractortag.findMany({where:{contid:user.contid}}).then(res => res.map(x => x.name))
-    const acceptedStartDatas = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{start:true}}}}).then(res => res.map(x => x.job.start));
+    const acceptedStartDates = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{start:true}}}}).then(res => res.map(x => x.job.start));
     const acceptedEndDates = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{end:true}}}}).then(res => res.map(x => x.job.end))
     const jobs = await prisma.job.findMany({
         where:{
@@ -314,54 +314,66 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                 {
                     OR:[
                         {
-                            end:{
-                                lte:{
-                                    all: acceptedStartDatas
-                                }
-                            }
+                            AND:acceptedStartDates.map(x => {
+                                return ({
+                                    end:{
+                                        lte: x
+                                    }
+                                })
+                            })
                         },
                         {
-                            end:{
-                                gte:{
-                                    all: acceptedEndDates
-                                }
-                            }
+                            AND:acceptedEndDates.map(x => {
+                                return ({
+                                    end:{
+                                        gte:x
+                                    }
+                                })
+                            })
                         }
                     ]
                 },
                 {
                     OR:[
                         {
-                            start:{
-                                gte:{
-                                    all: acceptedEndDates
-                                }
-                            }
+                            AND:acceptedEndDates.map(x => {
+                                return ({
+                                    start:{
+                                        gte: x
+                                    }
+                                })
+                            })
                         },
                         {
-                            start:{
-                                lte:{
-                                    all: acceptedStartDatas
-                                }
-                            }
+                            AND:acceptedStartDates.map(x => {
+                                return ({
+                                    start:{
+                                        lte: x
+                                    }
+                                })
+                            })
                         }
                     ]
                 },
                 {
                     OR:[
                         {
-                            start:{
-                                lte:{
-                                    all: acceptedStartDatas
-                                }
-                            }
+                            AND:acceptedStartDates.map(x => {
+                                return ({
+                                    start:{
+                                        lte: x
+                                    }
+                                })
+                            })
                         },
                         {
-                            end:{
-                                gte:{
-                                    all: acceptedEndDates
-                                }
-                            }
+                            AND:acceptedEndDates.map(x =>{
+                                return ({
+                                    end:{
+                                        gte:x
+                                    }
+                                })
+                            })
                         }
                     ]
                 },
