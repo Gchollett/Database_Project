@@ -82,16 +82,16 @@ const CompJobs = () => {
                     <Chip key={index} label={tag.name} variant="outlined" />
                   ))}
                 </Stack>
-                  {job.contractor ? (
+                  {(job.jobapplication.length > 0) ? (
                     <Stack spacing={1} mt={2} sx={{ backgroundColor: '#f9f9f9', padding: 1, borderRadius: 1 }}>
                       <Typography variant="subtitle2" color="textPrimary">
                         Status: Filled
                       </Typography>
                       <Typography variant="body2">
-                        Contractor: {job.contractor.name}
+                        Contractor: {job.jobapplication[0].contractor.firstname} {job.jobapplication[0].contractor.lastname}
                       </Typography>
                       <Typography variant="body2">
-                        Email: {job.contractor.email}
+                        {job.jobapplication[0].contractor.User.email}
                       </Typography>
                     </Stack>
                   ) : (
