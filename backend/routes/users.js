@@ -150,6 +150,7 @@ const userLoginSchema = z.object({
  *    tags:
  *      - User
  *    summary: "Validates User has an account."
+ *    security: []
  *    requestBody:
  *      required: true
  *      content:
@@ -211,13 +212,8 @@ router.post('/login',async (req,res) => {
  *    tags:
  *      - User
  *    summary: "Gets user data for Authorized Users"
- *    parameters:
- *      - in: header
- *        name: token
- *        schema:
- *        type: string
- *        description: "Authentification Token"
- *        required: true
+ *    security:
+ *        - bearerAuth: []
  *    responses:
  *      200:
  *        description: "User Successfully Found"
@@ -273,13 +269,8 @@ router.get('/profile', authorize(["Contractors","Companies"]), async function(re
  *    tags:
  *      - User
  *    summary: Gets the user type for Authorized Users.
- *    parameters:
- *      - in: header
- *        name: token
- *        schema:
- *          type: string
- *        description: "Authentification Token"
- *        required: true
+ *    security:
+ *      - bearerAuth: []
  *    responses:
  *      200:
  *        description: "User Type Successfully Found"

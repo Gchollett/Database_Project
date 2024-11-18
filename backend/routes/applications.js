@@ -14,13 +14,8 @@ const prisma = new PrismaClient();
  *      tags:
  *          - Application
  *      summary: "Gets the applications for Contractor Users that they have filed and gets the applications for Company Users for all jobs they have posted."
- *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      responses:
  *          200:
  *              description: "The applications were successfully found."
@@ -111,13 +106,8 @@ router.get('/',authorize(["Contractors","Companies"]), async (req,res) => {
  *      tags:
  *          - Application
  *      summary: "Gets the applications for Contractor Users that they have filed and gets the applications for Company Users for all jobs they have posted."
- *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      responses:
  *          200:
  *              description: "The accepted applications were successfully found."
@@ -170,18 +160,14 @@ router.get('/accepted',authorize(['Contractors']),async (req,res) =>{
  *          - Application
  *      summary: "Get applications for the given job for authorized Company Users"
  *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
  *          - in: path
  *            name: jobid
  *            schema:
  *              type: number
  *            description: "Id for the job"
  *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      responses:
  *          200:
  *              description: "Applications successfully found"
@@ -249,12 +235,8 @@ router.get('/:jobid',authorize(["Companies"]),async (req,res) => {
  *              type: number
  *            description: "Id of Contactor"
  *            required: true
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      responses:
  *          200:
  *              description: "Application Successfuly Found."
@@ -308,12 +290,8 @@ const applicationStatusSchema = z.object({
  *              type: number
  *            description: "Id of Contactor"
  *            required: true
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      requestBody:
  *          required: true
  *          content:
@@ -372,13 +350,9 @@ router.put('/:jobid/:contid',authorize(["Companies"]),async (req,res) => {
  *      tags:
  *          - Application
  *      summary: "Create application for Authorized User for job with Id"
+ *      security:
+ *          - bearerAuth: []
  *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
  *          - in: path
  *            name: jobid
  *            schema:
@@ -421,13 +395,9 @@ router.post('/:jobid/apply',authorize(['Contractors']),async (req,res) => {
  *      tags:
  *          - Application
  *      summary: "Delete application for Authorized Users for the Job with the Id."
+ *      security:
+ *          - bearerAuth: []
  *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
  *          - in: path
  *            name: jobid
  *            schema:

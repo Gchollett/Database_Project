@@ -9,27 +9,24 @@ const options = {
             title: "Workaholics",
             version
         },
-        components:{
-            securitySchemas:{
-                bearerAuth:{
-                    type: 'http',
-                    scheme: 'bearer',
-                    bearerFormat: 'JWT'
-                }
+        components: {
+            securitySchemes: {
+              bearerAuth: {
+                type: "http",
+                scheme: "bearer",
+                bearerformat: "JWT"
+              },
             },
-            security: {
-                bearerAuth: []
-            }
-        }
+          }
     },
-    apis: ['./routes/*.js','./utilities/schemas.js']
+    apis: ['./routes/*.js','./utilities/schemas.js'],
 }
 
 const swaggerSpec = swaggerJsdoc(options)
 
 function swaggerDocs(app, port){
     // Sawgger page
-    app.use('/docs',swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    app.use('/docs',swaggerUi.serve, swaggerUi.setup(swaggerSpec,{explorer:true}))
 
     //Docs in JSON format
     app.get('docs.json',(req, res) => {

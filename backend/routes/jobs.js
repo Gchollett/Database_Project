@@ -31,12 +31,8 @@ const prisma = new PrismaClient();
  *            description: "Stringified JSON filter"
  *            schema:
  *              type: string
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      responses:
  *          200:
  *              description: "Successfully found jobs"
@@ -143,13 +139,8 @@ const jobSchema = z.object({
  *      tags:
  *          - Job
  *      summary: "Authorized Company creates a job."
- *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
+ *      security:
+ *          - bearerAuth: []
  *      requestBody:
  *          required: true
  *          content:
@@ -218,13 +209,9 @@ router.post('/create', authorize(["Companies"]), async (req,res) => {
  *      tags:
  *          - Job
  *      summary: "Authorized Company can delete jobs they have posted."
+ *      security:
+ *          - bearerAuth: []
  *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
  *          - in: path
  *            name: jobid
  *            schema:
@@ -258,13 +245,9 @@ router.delete('/:jobid/delete',authorize(["Companies"]),async (req,res) => {
  *      tags:
  *          - Job
  *      summary: "Gets the job with the Id for Authorized Users"
+ *      security:
+ *          - bearerAuth: []
  *      parameters:
- *          - in: header
- *            name: token
- *            schema:
- *              type: string
- *            description: "Authentification Token"
- *            required: true
  *          - in: path
  *            name: jobid
  *            schema:
@@ -291,13 +274,115 @@ router.get('/job/:jobid',authorize(["Companies","Contractors"]),async (req,res) 
         res.status(200).send(job)
     }
 })
-
+/**
+ * @openapi
+ * /jobs/recommended:
+ *  get:
+ *      tags:
+ *          - Job
+ *      summary: "Gets the job with the Id for Authorized Users"
+ *      security:
+ *          - bearerAuth: []
+ *      parameters:
+ *          - in: query
+ *            name: limit
+ *            schema:
+ *              type: integer
+ *              default: 3
+ *            description: "Max amount of job recommendations you want"
+ *          - in: query
+ *            name: overlap
+ *            schema:
+ *              type: boolean
+ *              default: false
+ *            description: "If you want to check if your recommendadtions overlap with you current accepted jobs"
+ *      responses:
+ *          200:
+ *              description: "Successfully found the job."
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: "#/components/schemas/job"
+ *          401:
+ *              description: "Not Authorized"
+ */
 router.get('/recommended',authorize(['Contractors']),async (req,res) => {
     const user = res.locals.user;
+    const limit = req.query.limit 
+    const overlap = Boolean(req.query.overlap)
     const appliedJobs = await prisma.jobapplication.findMany({where:{contid:user.contid},select:{jobid:true}}).then(res => res.map(x => x.jobid));
     const userTags = await prisma.contractortag.findMany({where:{contid:user.contid}}).then(res => res.map(x => x.name))
     const acceptedStartDates = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{start:true}}}}).then(res => res.map(x => x.job.start));
     const acceptedEndDates = await prisma.jobapplication.findMany({where:{status:"Accepted"},select:{job:{select:{end:true}}}}).then(res => res.map(x => x.job.end))
+    const overlapfilter = overlap?{
+        AND:[
+            {
+                OR:[
+                    {
+                        AND:acceptedStartDates.map(x => {
+                            return ({
+                                end:{
+                                    lte: x
+                                }
+                            })
+                        })
+                    },
+                    {
+                        AND:acceptedEndDates.map(x => {
+                            return ({
+                                end:{
+                                    gte:x
+                                }
+                            })
+                        })
+                    }
+                ]
+            },
+            {
+                OR:[
+                    {
+                        AND:acceptedEndDates.map(x => {
+                            return ({
+                                start:{
+                                    gte: x
+                                }
+                            })
+                        })
+                    },
+                    {
+                        AND:acceptedStartDates.map(x => {
+                            return ({
+                                start:{
+                                    lte: x
+                                }
+                            })
+                        })
+                    }
+                ]
+            },
+            {
+                OR:[
+                    {
+                        AND:acceptedStartDates.map(x => {
+                            return ({
+                                start:{
+                                    lte: x
+                                }
+                            })
+                        })
+                    },
+                    {
+                        AND:acceptedEndDates.map(x =>{
+                            return ({
+                                end:{
+                                    gte:x
+                                }
+                            })
+                        })
+                    }
+                ]
+            },
+        ]}:{}
     const jobs = await prisma.job.findMany({
         where:{
             jobid:{
@@ -309,75 +394,7 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
                         in: userTags
                     }
                 }
-            },
-            AND:[
-                {
-                    OR:[
-                        {
-                            AND:acceptedStartDates.map(x => {
-                                return ({
-                                    end:{
-                                        lte: x
-                                    }
-                                })
-                            })
-                        },
-                        {
-                            AND:acceptedEndDates.map(x => {
-                                return ({
-                                    end:{
-                                        gte:x
-                                    }
-                                })
-                            })
-                        }
-                    ]
-                },
-                {
-                    OR:[
-                        {
-                            AND:acceptedEndDates.map(x => {
-                                return ({
-                                    start:{
-                                        gte: x
-                                    }
-                                })
-                            })
-                        },
-                        {
-                            AND:acceptedStartDates.map(x => {
-                                return ({
-                                    start:{
-                                        lte: x
-                                    }
-                                })
-                            })
-                        }
-                    ]
-                },
-                {
-                    OR:[
-                        {
-                            AND:acceptedStartDates.map(x => {
-                                return ({
-                                    start:{
-                                        lte: x
-                                    }
-                                })
-                            })
-                        },
-                        {
-                            AND:acceptedEndDates.map(x =>{
-                                return ({
-                                    end:{
-                                        gte:x
-                                    }
-                                })
-                            })
-                        }
-                    ]
-                },
-            ]
+            },...overlapfilter
         },
         select:{
             jobid:true,
@@ -399,7 +416,12 @@ router.get('/recommended',authorize(['Contractors']),async (req,res) => {
             }
         }
     })
-    res.status(200).send(jobs.sort((a,b) => a.pay*(a.start-a.end) - b.pay*(b.start-b.end)))
+    const sortedJobs = jobs.sort((a,b) => a.pay*(a.start-a.end) - b.pay*(b.start-b.end))
+    if(limit){
+        res.status(200).send(sortedJobs.slice(0,parseInt(limit)))
+    }else{
+        res.status(200).send(sortedJobs)
+    }
 })
 
 module.exports = router;
