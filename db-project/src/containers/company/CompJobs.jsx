@@ -37,6 +37,7 @@ const CompJobs = () => {
     const filtered = jobs
       .filter((job) =>
         job.title.toLowerCase().includes(searchLower) ||
+        job.description.toLowerCase().includes(searchLower) ||
         job.jobtag.some(tag => tag.name.toLowerCase().includes(searchLower)) 
       )
       .sort((a, b) => new Date(a.startDate) - new Date(b.startDate)); // Sort by start date
@@ -50,7 +51,7 @@ const CompJobs = () => {
       <Stack spacing={3}>
         <TextField
           fullWidth
-          label="Search by Title or Tags"
+          label="Search by Title, Description, or Tags"
           variant="outlined"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

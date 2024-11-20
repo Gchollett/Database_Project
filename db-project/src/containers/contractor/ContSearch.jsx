@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, TextField } from '@mui/material';
+import { Stack, Typography, Button, Select, MenuItem, FormControl, InputLabel, Grid, TextField, Tooltip, Switch, FormControlLabel, Chip } from '@mui/material';
 import { fetchWithAuth } from '../../utils/api';
 
 const ContSearch = () => {
@@ -7,16 +7,17 @@ const ContSearch = () => {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [sortOption, setSortOption] = useState('pay-asc'); // Default sort by pay ascending
   const [remoteOption, setRemoteOption] = useState('all'); // Default to show both remote and non-remote jobs
+  const [topPickOption, setTopPickOption] = useState(false); // Default to show both Top Picks and non-top picks (false means off)
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const [recommended, setRecommended] = useState([]);
 
   useEffect(() => {
-
     fetchWithAuth(`${import.meta.env.VITE_API_URL}/jobs`, {
       method: 'GET'
     })
     .then((res) => {
       if (!res.ok) {
-        res.text
+        res.text();
         throw new Error('Network response was not ok');
       }
       return res.json();
@@ -24,6 +25,23 @@ const ContSearch = () => {
     .then(data => {
       setJobs(data); // Assuming data is an array of job objects
       setFilteredJobs(data); // Initialize filteredJobs with the fetched jobs
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+
+    fetchWithAuth(`${import.meta.env.VITE_API_URL}/jobs/recommended`, {
+      method: 'GET'
+    })
+    .then((res) => {
+      if (!res.ok) {
+        res.text();
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(data => {
+      setRecommended(data); // Assuming data is an array of job objects
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
@@ -40,12 +58,19 @@ const ContSearch = () => {
       filtered = filtered.filter((job) => !job.remote);
     }
 
-    // Search by title
+    // Filter based on topPickOption (new toggle)
+    if (topPickOption) {
+      filtered = filtered.filter((job) => recommended.some((rec) => rec.jobid === job.jobid));
+    }
+
+    // Search by title or description
     const searchLower = searchQuery.toLowerCase();
     filtered = filtered.filter(
       (job) =>
         job.title.toLowerCase().includes(searchLower) ||
-        job.description.toLowerCase().includes(searchLower) // Assuming filtering by description
+        job.description.toLowerCase().includes(searchLower) ||
+        job.company.name.toLowerCase().includes(searchLower) ||
+        job.jobtag.some(tag => tag.name.toLowerCase().includes(searchLower))
     );
 
     // Sort by selected pay option
@@ -56,29 +81,24 @@ const ContSearch = () => {
     }
 
     setFilteredJobs(filtered);
-  }, [jobs, sortOption, remoteOption, searchQuery]);
+  }, [jobs, sortOption, remoteOption, searchQuery, topPickOption, recommended]);
 
   const applyForJob = async (jobid) => {
-  
     try {
       const response = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/applications/${jobid}/apply`, {
         method: 'POST'
       });
-  
+
       if (!response.ok) {
-        throw new Error('Application failed'); // Handle error appropriately
+        throw new Error('Application failed');
       }
-  
+
       const data = await response.text();
-      console.log('Application successful:', data); // Handle success (e.g., show a notification)
-  
-      // Optionally, you might want to display a success message or update the UI
       alert('Application submitted successfully!');
     } catch (error) {
       alert(error.message); // Display error message
     }
   };
-  
 
   return (
     <>
@@ -88,7 +108,7 @@ const ContSearch = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Search by Title or Description"
+              label="Search by Title, Company, Description, or Tags"
               variant="outlined"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -96,7 +116,7 @@ const ContSearch = () => {
           </Grid>
         </Grid>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth>
               <InputLabel>Sort by Pay</InputLabel>
               <Select
@@ -108,7 +128,7 @@ const ContSearch = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth>
               <InputLabel>Filter by Remote</InputLabel>
               <Select
@@ -120,6 +140,18 @@ const ContSearch = () => {
                 <MenuItem value="non-remote">Non-Remote</MenuItem>
               </Select>
             </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={topPickOption}
+                  onChange={(e) => setTopPickOption(e.target.checked)}
+                  color="primary"
+                />
+              }
+              label="Show Only Top Picks"
+            />
           </Grid>
         </Grid>
         <hr />
@@ -149,8 +181,20 @@ const ContSearch = () => {
                   Pay: ${job.pay}/hr
                 </Typography>
                 <Typography variant="body2">{job.description}</Typography>
+                 <Stack direction="row" spacing={1} mt={1}>
+                  {job.jobtag.map((tag, index) => (
+                    <Chip key={index} label={tag.name} variant="outlined" />
+                  ))}
+                </Stack>
               </Stack>
               <Stack spacing={1} alignItems="flex-end">
+                {recommended.some((rec) => rec.jobid === job.jobid) && (
+                  <Tooltip title="This job is recommended to you by our algorithm. It will maximize your profits based on your currently accepted jobs." arrow>
+                    <Typography variant="subtitle2" color="primary">
+                      Top Pick For You
+                    </Typography>
+                  </Tooltip>
+                )}
                 <Button variant="contained" color="primary" onClick={() => applyForJob(job.jobid)}>
                   Apply
                 </Button>
@@ -166,3 +210,4 @@ const ContSearch = () => {
 };
 
 export default ContSearch;
+
